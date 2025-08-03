@@ -5,11 +5,11 @@ files, without the need for external programs such as R or gnuplot.
 It is a simple (and limited in scope) wrapper around [[https://plotly.com/][Plotly]].
 
 The main workhorse is the ~simplolty~ function, which translates
-a list list into a javascript element, then embed it into and HTML
+a lisp list into a javascript element, then embed it into an HTML
 file and opens it in a browser.
 
 A few convenience functions such as ~dotchart~ and ~barchart~ are
-provided in order to make the creation of such common graph easier.
+provided in order to make the creation of such common graphs easier.
 
 
 * Installation
@@ -26,13 +26,14 @@ M-x eplotly-mode and you are able to use its plotting functions.
 
 To make the plot creation faster (and to be able to create plots
 when you are not connected to the Internet), we suggest to download
-locally a copy of plotly.js and do the following:
+locally a copy of plotly.js, i.e. something like the following:
 
 1. Get plotly.js from https://plotly.com/javascript/getting-started/
    (see the "Download" paragraph) and store it somewere in
    your machine.
-2. Set the variable *plotly-dir* equal to the path to the
-   directory where you've downloaded the plotly.min.js file
+2. Set the variable *plotly-dir* equal to the path of the
+   directory where you've downloaded the plotly.min.js file, e.g.
+   write in your ~.emacs~ something like
 
    #+begin_src elisp
      (setq *plotly-dir* "/path/to/plotlyjs/")
@@ -43,18 +44,28 @@ locally a copy of plotly.js and do the following:
 
 ** Dotcharts
 
-   You can plot a dotchart via the ~dotchart~ function as passing
-   lists of 2 series of values (the first one for the x values and
-   the second for the y values), e.g.
+   You can plot a dotchart via the ~dotchart~ function: it accepts one or
+   more arguments:
 
+    - the first one is a list of one or more lists that contain the data
+      to plot, plus addition parameters
+    - the rest of the arguments are in the form of :keys and contain parameters
+      for the chart layout.
+
+
+    Eg. to plot a series of dots, simply pass a list whose car contains
+    2 lists, the first one containing the values of the x-coordinates of
+    the dots, the second one containing the y-values.
    #+begin_src elisp
 
-     (dotchart
-      '(((1 2 3 4)
-         (10 11 12 13))))
+          (dotchart
+           '(((1 2 3 4)
+              (10 11 12 13))))
+
    #+end_src
 
-   Suppose we want to add a second series of dots:
+   Suppose we want to add a second series of dots, simply add another
+   nested list with x and y values to the data-series.
    #+begin_src elisp
 
      (dotchart
@@ -67,7 +78,7 @@ locally a copy of plotly.js and do the following:
         ))
    #+end_src
 
-   For each series we can customize various parameters (these parameters try to
+   For each series we can customize various some parameters (these parameters try to
    follow the same names used in Plotly). If we want to plot a line that passes
    through the dots, we should pass the value "lines" to the key :mode:
 
@@ -83,18 +94,6 @@ locally a copy of plotly.js and do the following:
 
    To plot both dots and line, just use :mode "lines+markers":
 
-   
-
-   #+begin_src elisp
-
-          (dotchart
-           '(((1 2 3 4)
-              (10 11 12 13)
-             :mode "lines+markers")))
-   #+end_src
-
-   If you want to add some text on every dot:
-
 
    #+begin_src elisp
 
@@ -102,7 +101,7 @@ locally a copy of plotly.js and do the following:
                 '(((1 2 3 4)
                    (10 11 12 13)
                   :mode "lines+markers"
-                  :text '("A" "B" "C"))))
+                  )))
    #+end_src
 
   The following are some of the keys that you can use for each data seris:
@@ -119,20 +118,28 @@ locally a copy of plotly.js and do the following:
   - :symbol :: the symbol to be used to represent the dots.
     
 
-  To set the title of the chart, you can set the keyword title (Nota Bene:
+  To set the title of the chart, you can set the keyword :title (Nota Bene:
   this has to be set 'outside' the list of data series - please note the
   parenthesis in the following examples):
   
    #+begin_src elisp
 
      (dotchart
-      '(((1 2 3) (3 3 3) :mode "markers"
+      '(
+        ;; first series of data to plot
+        ((1 2 3) (3 3 3) :mode "markers"
          :size (20 30 40) :color "blue")
+        ;; second series
         ((1 2 3) (5 2 1) :mode "lines" :text '("A" "B" "C"))
+        ;; third series
         ((1 2 3) (5 5 8) :mode "lines+markers" :name "Team C" :size 20))
-        :title "My first plots")
+      ;; layout parameters
+      :title "My first plots")
+
    #+end_src
 
+   You can also customize the color and the shape of each dot in a data-series
+   via the :color and :symbol keys.
 
   #+begin_src elisp
 
@@ -145,10 +152,11 @@ locally a copy of plotly.js and do the following:
 
      :title "Using Dotchart elisp function")
   #+end_src
-   
+
+  
 ** Barcharts
 
-  To create barchart you need to pass lists of data for every series of bars.
+  To create a barchart you need to pass lists of data for every series of bars.
   Each series should be composed of:
 
   - a first list of labels for each bar
@@ -157,19 +165,26 @@ locally a copy of plotly.js and do the following:
 
   Then - after the data series - we can also pass the following values:
 
-  - :barmode :: if "stack" the bars are stacked
+  - :barmode :: if set to "stack", the bars are stacked
   - :title :: title of the chart
 
 
   #+begin_src elisp
-    (barchart '((("giraffes" "orangutans" "monkeys")
-             (20 14 23)
-             :name "SF Zoo")
-            (("giraffes" "orangutans" "monkeys")
-             (12 18 29)
-             :name "LA Zoo"))
-          :barmode  "stack"
-          :title "Simple Barcharts")
+    (barchart '(
+                ;; first series of bars
+                (
+                 ;; series of labels for the bars
+                 ("giraffes" "orangutans" "monkeys")
+                 ;; height of the bars
+                 (20 14 23)
+                 ;; name of the series
+                 :name "SF Zoo")
+                ;; second series od bars
+                (("giraffes" "orangutans" "monkeys")
+                 (12 18 29)
+                 :name "LA Zoo"))
+              :barmode  "stack"
+              :title "Simple Barcharts")
   #+end_src
   
 
@@ -184,7 +199,7 @@ locally a copy of plotly.js and do the following:
                 ))
   #+end_src
 
-  The angle of the tick marks can be rotated via the :tickangle parameter:
+  The angle of the text at the tick marks can be rotated via the :tickangle parameter:
 
   #+begin_src elisp
     (barchart  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
@@ -192,6 +207,252 @@ locally a copy of plotly.js and do the following:
               :text  (8.0 8.0 12.0 12.0 13.0 20.0)))
            :tickangle -45)
   #+end_src
+
+
+* Piechart
+
+  To create a simple pie chart, pass a data series with the following parameters:
+
+  - values : values for each slice of the piechart
+  - labels : labels for each slice of the piechart
+  - type: set to "pie"
+    
+#+begin_src elisp
+  (simplotly
+      '(
+        ((values . (30 20 50))
+         (labels . ("Residential" "Non-Residential" "Utility"))
+         (type . "pie")
+         )))
+#+end_src
+
+#+RESULTS:
+
+  To create a doughnut chart, simply include the additiona parameter
+  'hole in the alist:
+
+#+begin_src elisp
+  (simplotly
+      '(
+        ((values  16 15 12 6 5 4 42)
+         (labels . ("US" "China" "European Union" "Russian Federation"
+                    "Brazil" "India" "Rest of World" ))
+         (type . "pie")
+         (hoverinfo . "label+percent+name")
+         (hole . .7)
+         (name . "GHG Emissions")
+         )))
+
+
+#+end_src
+
+* Heatmap
+
+  To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
+  a nested list built according to the following criteria:
+
+  - each nested list contains the data of a row (first nested list represents
+    the first row at the bottom of the heatmap, the last nested list represents
+    the row at the top of the heatmap).
+  - Each cell in each nested list represents a cell of the heatmap (cells
+    are represented from left to right)
+
+    I.e. to obtain the following heatmap
+
+    
+    | 1 |  2 |  3 |  4 |
+    | 5 |  6 |  7 |  8 |
+    | 9 | 10 | 11 | 12 |
+
+    you should use the following nested list:
+
+    '((9 10 11 12) (5 6 7 8) (1 2 3 4))
+
+    
+  #+begin_src elisp
+    (simplotly
+          '((
+             (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
+             (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
+             (y . ("Morning" "Afternoon" "Evening"))
+             (type . "heatmap"))
+            ))
+  #+end_src
+
+
+  
+
+* Histograms
+
+ For vertical histograms, the data-series list must contain
+ a nested list with car equal 'x and 'type equal to "histogram":
+
+#+begin_src elisp
+  (simplotly
+   '(((x . (1 2 2 2 1 1 1 4 4 4))
+      (type . "histogram"))))
+#+end_src
+
+  For horizontal histograms, use 'y instead of 'x for
+  the car of the data-series list:
+  
+#+begin_src elisp
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4))
+      (type . "histogram"))))
+#+end_src
+
+  For a stacked histogram, pass two or more series as a first argument,
+  then, as a second argume (containing the layout settings) include
+  an alist with values (barmode . "stack").
+  
+#+begin_src elisp
+  (simplotly
+   '(((x . (1 2 2 2 1 1 1 4 4 4))
+      (type . "histogram"))
+     ((x . (3 3 2  1 1 1 5 5 5 ))
+      (type . "histogram")))
+   '((barmode . "stack")))
+#+end_src
+
+
+* Boxplots
+
+
+For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
+
+#+begin_src elisp
+
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
+      (type . "box"))
+     ((y . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+For horizontal boxplots, use 'x instead of 'y in the data-series
+nested list.
+
+#+begin_src elisp
+
+  (simplotly
+   '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
+      (type . "box"))
+     ((x . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+Let's create a plot similar to the one in Plotly-javascript tutorial:
+
+#+begin_src elisp
+    (defun random-list(n upper-limit)
+      "Convenience function to create a list
+  of random numbers."
+      (let*
+          ((res '()))
+        (dotimes (x n)
+          (push (random upper-limit) res))
+        (reverse res))
+      )
+
+    (simplotly
+     `(((y . ,(random-list 30 10))
+        (type . "box"))
+       ((y . ,(random-list 30 11))
+        (type . "box"))))
+
+#+end_src
+
+    To include the underlying dots, add:
+
+    - (boxpoints . "all")
+    - (jitter . 0.3)
+    - (pointpos . -1.8)
+
+      to the data series (of course these are just the same values
+      used in the javascript tutorial, you are supposed to use the
+      most appropriate values for your plot).
+
+#+begin_src elisp
+
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
+
+      (boxpoints . "all")
+      (jitter . 0.3)
+      (pointpos . -1.8)
+      (type . "box"))
+     ((y . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+
+*Grouped boxplots*: for each data series, pass both y values (the data
+from which the box should be built) and x values (labels that represent
+the group to which each y-value belongs to).
+
+#+begin_src elisp
+  (setq days
+        '("day 1" "day 1" "day 1" "day 1" "day 1" "day 1"
+
+           "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
+
+
+  (simplotly
+   `((
+      (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
+      (x . ,days)
+      (name . "kale")
+      ;; marker: {color: "#3D9970"}
+      (type . "box"))
+     ((y . [0.6 0.7 0.3 0.6 0.0 0.5 0.7 0.9 0.5 0.8 0.7 0.2])
+      (x . ,days)
+      (name . "radishes")
+      ;; marker: {color: "#FF4136"}
+      (type . "box")
+      )
+     (
+      (y . [0.1 0.3 0.1 0.9 0.6 0.6 0.9 1.0 0.3 0.6 0.8 0.5])
+      (x . ,days)
+      (name . "carrots")
+      ;; marker: {color: "#FF851B"}
+      (type . "box")))
+   '((boxmode . "group")))
+
+#+end_src
+
+
+* Surface plots
+
+ Pass an alist with car equal z and cdr a nested list of
+ height values, and another one with car equal 'type
+ and cdr equal "surface").
+
+#+begin_src elisp
+  (simplotly
+   '((
+      (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
+               (8.89 8.94 8.85 8.94 8.96 8.92) 
+               (8.84 8.9 8.82 8.92 8.93 8.91) 
+               (8.79 8.85 8.79 8.9 8.94 8.92) 
+               (8.79 8.88 8.81 8.9 8.95 8.92) 
+               (8.8 8.82 8.78 8.91 8.94 8.92) 
+               (8.75 8.78 8.77 8.91 8.95 8.92) 
+               (8.8 8.8 8.77 8.91 8.95 8.94) 
+               (8.74 8.81 8.76 8.93 8.98 8.99) 
+               (8.89 8.99 8.92 9.1 9.13 9.11) 
+               (8.97 8.97 8.91 9.09 9.11 9.11) 
+               (9.04 9.08 9.05 9.25 9.28 9.27) 
+               (9 9.01 9 9.2 9.23 9.2) 
+               (8.99 8.99 8.98 9.18 9.2 9.19) 
+               (8.93 8.97 8.97 9.18 9.2 9.18)))
+      (type . "surface"))))
+#+end_src
+
+
 
 
 * More complex graphs
@@ -333,245 +594,6 @@ locally a copy of plotly.js and do the following:
 
 
   
-* Piechart
-
-#+begin_src elisp
-  (simplotly
-      '(
-        ((values  30 20 50)
-         (labels . ("Residential" "Non-Residential" "Utility"))
-         (type . "pie")
-         )))
-#+end_src
-
-
-
-#+begin_src elisp
-  (simplotly
-      '(
-        ((values  16 15 12 6 5 4 42)
-         (labels . ("US" "China" "European Union" "Russian Federation"
-                    "Brazil" "India" "Rest of World" ))
-         (type . "pie")
-         (hoverinfo . "label+percent+name")
-         (hole . .4)
-         (name . "GHG Emissions")
-         )))
-#+end_src
-
-* Heatmap
-
-  To build heatmap you need to pass an alist with car equal to 'z and cdr equal to a
-  a nested list whish should follow these criteria:
-
-  - each nested list contains the data of a row (first nested list represents
-    the first row at the bottom of the heatmap, the last nested list represents
-    the row at the top of the heatmap).
-  - Each cell in each nested list represents a cell of the heatmap (cells
-    are represented from left to right)
-
-    I.e. to obtain the following heatmap
-
-    
-    | 1 |  2 |  3 |  4 |
-    | 5 |  6 |  7 |  8 |
-    | 9 | 10 | 11 | 12 |
-
-    you should use the following nested list:
-
-    '((9 10 11 12) (5 6 7 8) (1 2 3 4))
-
-    
-  #+begin_src elisp
-    (simplotly
-          '((
-             (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
-             (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
-             (y . ("Morning" "Afternoon" "Evening"))
-             (type . "heatmap"))
-            ))
-
-
-  #+end_src
-
-
-  
-
-
-* Histograms
-
- Vertical histograms, the data-series list must contain
- a nested list with car equal 'x
-
-#+begin_src elisp
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))))
-#+end_src
-
-  For horizontal histogram, use 'y instead of 'x for
-  the car of the data-series list
-  
-#+begin_src elisp
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))))
-#+end_src
-
-  For a stacked histogram, pass two or more series as a first argument,
-  then, as a second argume (containing the layout settings) include
-  an alist with values (barmode . "stack").
-  
-#+begin_src elisp
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))
-     ((x . (3 3 2  1 1 1 5 5 5 ))
-      (type . "histogram")))
-   '((barmode . "stack")))
-#+end_src
-
-
-
-* Boxplots
-
-
-For vertical boxplots, pass alists with car equal to 'y:
-
-#+begin_src elisp
-
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
-      (type . "box"))
-     ((y . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-For horizontal boxplots, use 'x instead of 'y in the data-series
-nested list.
-
-#+begin_src elisp
-
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
-      (type . "box"))
-     ((x . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-Let's create a plot similar to the one in Plotly-javascript tutorial
-
-#+begin_src elisp
-    (defun random-list(n upper-limit)
-      "Convenience function to create a list
-  of random numbers."
-      (let*
-          ((res '()))
-        (dotimes (x n)
-          (push (random upper-limit) res))
-        (reverse res))
-      )
-
-    (simplotly
-     `(((y . ,(random-list 30 10))
-        (type . "box"))
-       ((y . ,(random-list 30 11))
-        (type . "box"))))
-
-#+end_src
-
-    To include underlaying dots, add:
-
-    - (boxpoints . "all")
-    - (jitter . 0.3)
-    - (pointpos . -1.8)
-
-      To the data series (of course these are just the same values
-      used in the javascript tutorial, you are supposed to use the
-      most appropriate values for your plot).
-
-#+begin_src elisp
-
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
-
-      (boxpoints . "all")
-      (jitter . 0.3)
-      (pointpos . -1.8)
-      (type . "box"))
-     ((y . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-
-Gropued boxplots: for each data series, pass both y values (the data
-from which the box should be built) and x values (labels that represent
-the group to which each y-value belongs to).
-
-#+begin_src elisp
-  (setq days
-        '("day 1" "day 1" "day 1" "day 1" "day 1" "day 1"
-
-           "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
-
-
-  (simplotly
-   `((
-      (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
-      (x . ,days)
-      (name . "kale")
-      ;; marker: {color: "#3D9970"}
-      (type . "box"))
-     ((y . [0.6 0.7 0.3 0.6 0.0 0.5 0.7 0.9 0.5 0.8 0.7 0.2])
-      (x . ,days)
-      (name . "radishes")
-      ;; marker: {color: "#FF4136"}
-      (type . "box")
-      )
-     (
-      (y . [0.1 0.3 0.1 0.9 0.6 0.6 0.9 1.0 0.3 0.6 0.8 0.5])
-      (x . ,days)
-      (name . "carrots")
-      ;; marker: {color: "#FF851B"}
-      (type . "box")))
-   '((boxmode . "group")))
-
-#+end_src
-
-
-* Surface plots
-
- Pass an alist with car equal z and cdr a nested list of
- height values, and another one with car equal 'type
- and cdr equal "surface").
-
-#+begin_src elisp
-  (simplotly
-   '((
-      (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
-               (8.89 8.94 8.85 8.94 8.96 8.92) 
-               (8.84 8.9 8.82 8.92 8.93 8.91) 
-               (8.79 8.85 8.79 8.9 8.94 8.92) 
-               (8.79 8.88 8.81 8.9 8.95 8.92) 
-               (8.8 8.82 8.78 8.91 8.94 8.92) 
-               (8.75 8.78 8.77 8.91 8.95 8.92) 
-               (8.8 8.8 8.77 8.91 8.95 8.94) 
-               (8.74 8.81 8.76 8.93 8.98 8.99) 
-               (8.89 8.99 8.92 9.1 9.13 9.11) 
-               (8.97 8.97 8.91 9.09 9.11 9.11) 
-               (9.04 9.08 9.05 9.25 9.28 9.27) 
-               (9 9.01 9 9.2 9.23 9.2) 
-               (8.99 8.99 8.98 9.18 9.2 9.19) 
-               (8.93 8.97 8.97 9.18 9.2 9.18)))
-      (type . "surface"))))
-#+end_src
-
-
-
-
 * Subplots
 
   You need to pass a second argument to the simplotly function (an
