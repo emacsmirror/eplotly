@@ -364,6 +364,197 @@ Arguments:
              (apply #'simple-layout layout-args))
   )
 
+;; Piecharts
+
+(cl-defun pie-series(vals labels
+                             &key
+                             (name "")
+                             (text nil)
+                             (hole 0)
+                             )
+  "Create an alist for the plotly chart.
+
+Arguments:
+
+- VALS: list of values for each slice of the pie
+- LABELS: list of labels for each slice of the pie
+- NAME: name of the series
+- TEXT: text to be added to the series
+- HOLE: size of the hole in the middle of the pie (between 0 and 1)"
+  `((values . ,vals)
+    (labels . ,labels)
+    ;; (mode . ,mode)
+    (type . "pie")
+    (name . ,name)
+    (text . ,text)
+    (hole . ,hole)
+    )
+  )
+
+
+(cl-defun pie(series &rest layout-args)
+  "Make creation of a piechart a little easier.
+
+Arguments:
+
+- SERIES: a nested list containing data series to plot.
+
+- LAYOUT-ARGS: an alist containing the layout parameters
+               for the chart."
+  (simplotly (mapcar #'(lambda(x)
+                         (apply #'pie-series x)) series)
+             (apply #'simple-layout layout-args))
+  )
+
+;; Heatmap
+
+(cl-defun heatmap-series(vals
+                             &key
+                             (x nil)
+                             (y nil)
+                             (text nil)
+                             (name "")
+                             )
+  "Create an alist for the plotly chart.
+
+Arguments:
+
+- VALS: values for the heatmap; this should be a nested
+       list where each inner list represent the rows of the heatmap
+       (the first list represent the bottom row of the map,
+       the second list represents the second row, and so on..)
+- X: list of labels for the columns of the map
+- Y: list of labels for the rows of the map
+- NAME: name of the series
+- TEXT: text to be added to the series"
+  `((z . ,vals)
+    (x . ,x)
+    (y . ,y)
+    ;; (mode . ,mode)
+    (type . "heatmap")
+    (name . ,name)
+    (text . ,text)
+    )
+  )
+
+
+(cl-defun heatmap(series &rest layout-args)
+  "Make creation of a heatmapchart a little easier.
+
+Arguments:
+
+- SERIES: a nested list containing data series to plot.
+
+- LAYOUT-ARGS: an alist containing the layout parameters
+               for the chart."
+  (simplotly (mapcar #'(lambda(x)
+                         (apply #'heatmap-series x)) series)
+             (apply #'simple-layout layout-args))
+  )
+
+
+;; Histograms
+
+(cl-defun hist-series(vals
+                      &key
+                      (direction "vertical")
+                      (text nil)
+                      (name "")
+                      )
+  "Create an alist for the plotly chart.
+
+Arguments:
+
+- VALS: list of values for each slice of the hist
+- DIRECTION: direction of the bars; should be either
+            \"horizontal\" or \"vertical\"
+- TEXT: text to be added to the series
+- NAME: name of the series of bars
+- HOLE: size of the hole in the middle of the hist (between 0 and 1)"
+  (cond
+   ((equal direction "vertical")
+    `((x . ,vals)
+      (type . "histogram")
+      (name . ,name)
+      (text . ,text)
+      ))
+   ((equal direction "horizontal")
+    `((y . ,vals)
+      (type . "histogram")
+      (name . ,name)
+      (text . ,text)
+      ))
+   (t
+    (error "Direction should either be horizontal or vertical")))
+  )
+
+
+(cl-defun hist(series &rest layout-args)
+  "Make creation of a histchart a little easier.
+
+Arguments:
+
+- SERIES: a nested list containing data series to plot.
+
+- LAYOUT-ARGS: an alist containing the layout parameters
+               for the chart."
+  (simplotly (mapcar #'(lambda(x)
+                         (apply #'hist-series x)) series)
+             (apply #'simple-layout layout-args))
+  )
+
+
+;; Boxplots
+
+(cl-defun box-series(vals
+                      &key
+                      (direction "vertical")
+                      (text nil)
+                      (name nil)
+                      )
+  "Create an alist for the plotly chart.
+
+Arguments:
+
+- VALS: list of values for each slice of the box
+- DIRECTION: direction of the boxes; should be either
+             \"horizontal\" or \"vertical\"
+- NAME: name of the series
+- TEXT: text to be added to the series"
+
+  (cond
+   ((equal direction "vertical")
+    `((y . ,vals)
+      (type . "box")
+      (name . ,name)
+      (text . ,text)))
+   ((equal direction "horizontal")
+    `((x . ,vals)
+      (type . "box")
+      (name . ,name)
+      (text . ,text)
+      ))
+   (t
+    (error "Direction should either be horizontal or vertical")))
+  )
+
+
+(cl-defun box(series &rest layout-args)
+  "Make creation of a boxchart a little easier.
+
+Arguments:
+
+- SERIES: a nested list containing data series to plot.
+
+- LAYOUT-ARGS: an alist containing the layout parameters
+               for the chart."
+  (simplotly (mapcar #'(lambda(x)
+                         (apply #'box-series x)) series)
+             (apply #'simple-layout layout-args))
+  )
+   
+
+    
 
 (provide 'eplotly)
 ;;; eplotly.el ends here

@@ -211,18 +211,17 @@ locally a copy of plotly.js, i.e. something like the following:
 
 * Piechart
 
-  To create a simple pie chart, pass a data series with the following parameters:
+  To create a simple pie chart, pass a data series whose elements
+  are
 
-  - values : values for each slice of the piechart
-  - labels : labels for each slice of the piechart
-  - type: set to "pie"
-    
+  - values for each slice of the piechart
+  - labels for each slice of the piechart
+
 #+begin_src elisp
-  (simplotly
+  (pie
       '(
-        ((values . (30 20 50))
-         (labels . ("Residential" "Non-Residential" "Utility"))
-         (type . "pie")
+        ((30 20 50)
+         ("Residential" "Non-Residential" "Utility")
          )))
 #+end_src
 
@@ -232,16 +231,14 @@ locally a copy of plotly.js, i.e. something like the following:
   'hole in the alist:
 
 #+begin_src elisp
-  (simplotly
-      '(
-        ((values  16 15 12 6 5 4 42)
-         (labels . ("US" "China" "European Union" "Russian Federation"
-                    "Brazil" "India" "Rest of World" ))
-         (type . "pie")
-         (hoverinfo . "label+percent+name")
-         (hole . .7)
-         (name . "GHG Emissions")
-         )))
+   (pie
+       '(
+         ((16 15 12 6 5 4 42)
+          ("US" "China" "European Union" "Russian Federation"
+                     "Brazil" "India" "Rest of World" )
+          :hole .7
+          :name "GHG Emissions")
+          ))
 
 
 #+end_src
@@ -268,192 +265,113 @@ locally a copy of plotly.js, i.e. something like the following:
 
     '((9 10 11 12) (5 6 7 8) (1 2 3 4))
 
-    
-  #+begin_src elisp
-    (simplotly
+
+    #+begin_src elisp
+      
+  (heatmap
           '((
-             (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
-             (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
-             (y . ("Morning" "Afternoon" "Evening"))
-             (type . "heatmap"))
-            ))
-  #+end_src
+             ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))))
 
+    #+end_src
 
-  
+    If you want to add labels to the x and y axis, just set the
+    :x and :y parameters with list containing the labels (pay
+    attention to the lenght of each list, which should correspond
+    to the size of the heatmap, i.e. the length of the :x list should
+    be equal to the number of columnts of the map, while the
+    length of the :y list should be equal to the number of rows):
+
+#+begin_src elisp
+
+  (heatmap
+   '((
+      ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20))
+      :x ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
+      :y ("Morning" "Afternoon" "Evening"))))
+#+end_src
+
 
 * Histograms
 
- For vertical histograms, the data-series list must contain
- a nested list with car equal 'x and 'type equal to "histogram":
-
+ To plot histograms you can use the function ~hist~
+ 
 #+begin_src elisp
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))))
+  (hist
+   '(((1 2 2 2 1 1 1 4 4 4)
+      )))
 #+end_src
 
-  For horizontal histograms, use 'y instead of 'x for
-  the car of the data-series list:
+  By default the bars are plotted vertically; to have horizontal
+  bars, set the key :direction to "horizontal";
   
 #+begin_src elisp
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))))
+  (hist
+   '(((1 2 2 2 1 1 1 4 4 4)
+      :direction "horizontal"
+      )))
+
 #+end_src
 
   For a stacked histogram, pass two or more series as a first argument,
-  then, as a second argume (containing the layout settings) include
-  an alist with values (barmode . "stack").
+  then, then pass the :barmode key set to "stack".
   
 #+begin_src elisp
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4))
-      (type . "histogram"))
-     ((x . (3 3 2  1 1 1 5 5 5 ))
-      (type . "histogram")))
-   '((barmode . "stack")))
+  (hist
+   '(((1 2 2 2 1 1 1 4 4 4))
+     ((3 3 2  1 1 1 5 5 5 )))
+   :barmode "stack")
 #+end_src
 
 
 * Boxplots
 
 
-For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
+For vertical boxplots, pass lists of data for each bar
+
 
 #+begin_src elisp
 
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
-      (type . "box"))
-     ((y . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-For horizontal boxplots, use 'x instead of 'y in the data-series
-nested list.
-
-#+begin_src elisp
-
-  (simplotly
-   '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
-      (type . "box"))
-     ((x . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-Let's create a plot similar to the one in Plotly-javascript tutorial:
-
-#+begin_src elisp
-    (defun random-list(n upper-limit)
-      "Convenience function to create a list
-  of random numbers."
-      (let*
-          ((res '()))
-        (dotimes (x n)
-          (push (random upper-limit) res))
-        (reverse res))
-      )
-
-    (simplotly
-     `(((y . ,(random-list 30 10))
-        (type . "box"))
-       ((y . ,(random-list 30 11))
-        (type . "box"))))
-
-#+end_src
-
-    To include the underlying dots, add:
-
-    - (boxpoints . "all")
-    - (jitter . 0.3)
-    - (pointpos . -1.8)
-
-      to the data series (of course these are just the same values
-      used in the javascript tutorial, you are supposed to use the
-      most appropriate values for your plot).
-
-#+begin_src elisp
-
-  (simplotly
-   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
-
-      (boxpoints . "all")
-      (jitter . 0.3)
-      (pointpos . -1.8)
-      (type . "box"))
-     ((y . (3 3 2  1 1 1 5 5 5 ))
-      (type . "box"))))
-
-#+end_src
-
-
-*Grouped boxplots*: for each data series, pass both y values (the data
-from which the box should be built) and x values (labels that represent
-the group to which each y-value belongs to).
-
-#+begin_src elisp
-  (setq days
-        '("day 1" "day 1" "day 1" "day 1" "day 1" "day 1"
-
-           "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
-
-
-  (simplotly
-   `((
-      (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
-      (x . ,days)
-      (name . "kale")
-      ;; marker: {color: "#3D9970"}
-      (type . "box"))
-     ((y . [0.6 0.7 0.3 0.6 0.0 0.5 0.7 0.9 0.5 0.8 0.7 0.2])
-      (x . ,days)
-      (name . "radishes")
-      ;; marker: {color: "#FF4136"}
-      (type . "box")
-      )
-     (
-      (y . [0.1 0.3 0.1 0.9 0.6 0.6 0.9 1.0 0.3 0.6 0.8 0.5])
-      (x . ,days)
-      (name . "carrots")
-      ;; marker: {color: "#FF851B"}
-      (type . "box")))
-   '((boxmode . "group")))
-
-#+end_src
-
-
-* Surface plots
-
- Pass an alist with car equal z and cdr a nested list of
- height values, and another one with car equal 'type
- and cdr equal "surface").
-
-#+begin_src elisp
-  (simplotly
+  (box
    '((
-      (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
-               (8.89 8.94 8.85 8.94 8.96 8.92) 
-               (8.84 8.9 8.82 8.92 8.93 8.91) 
-               (8.79 8.85 8.79 8.9 8.94 8.92) 
-               (8.79 8.88 8.81 8.9 8.95 8.92) 
-               (8.8 8.82 8.78 8.91 8.94 8.92) 
-               (8.75 8.78 8.77 8.91 8.95 8.92) 
-               (8.8 8.8 8.77 8.91 8.95 8.94) 
-               (8.74 8.81 8.76 8.93 8.98 8.99) 
-               (8.89 8.99 8.92 9.1 9.13 9.11) 
-               (8.97 8.97 8.91 9.09 9.11 9.11) 
-               (9.04 9.08 9.05 9.25 9.28 9.27) 
-               (9 9.01 9 9.2 9.23 9.2) 
-               (8.99 8.99 8.98 9.18 9.2 9.19) 
-               (8.93 8.97 8.97 9.18 9.2 9.18)))
-      (type . "surface"))))
+      (1 2 2 2 1 1 1 4 4 4 10 -5))
+     ((3 3 2  1 1 1 5 5 5 ))))
+
+#+end_src
+
+You can specify the names of each box, by using the :name key
+
+#+begin_src elisp
+
+      (box
+       '((
+          (1 2 2 2 1 1 1 4 4 4 10 -5)
+          :name "first")
+         ((3 3 2  1 1 1 5 5 5 )
+          :name "second")))
+
+#+end_src
+
+
+For horizontal boxplots, set the :direction key to "horizontal"
+
+#+begin_src elisp
+
+            (box
+             '((
+                (1 2 2 2 1 1 1 4 4 4 10 -5)
+                :name "first"
+                :direction "horizontal")
+               ((3 3 2  1 1 1 5 5 5 )
+                :name "second"
+                :direction "horizontal"))
+             )
+
 #+end_src
 
 
 
+*Grouped boxplots*: for grouped boxplots it is more convenient to
+use the *simplot* function (see [[Create boxplots]] paragraph)
 
 * More complex graphs
 
@@ -593,7 +511,184 @@ the group to which each y-value belongs to).
   #+end_src
 
 
+  Create a piechart:
+
+  #+begin_src elisp
+  (simplotly
+      '(
+        ((values . (30 20 50))
+         (labels . ("Residential" "Non-Residential" "Utility"))
+         (type . "pie")
+         )))
+#+end_src
+
+  Create a doughnut chart:
+
+  #+begin_src elisp
+  (simplotly
+      '(
+        ((values  16 15 12 6 5 4 42)
+         (labels . ("US" "China" "European Union" "Russian Federation"
+                    "Brazil" "India" "Rest of World" ))
+         (type . "pie")
+         (hoverinfo . "label+percent+name")
+         (hole . .7)
+         (name . "GHG Emissions")
+         )))
+
+
+#+end_src
+
+
+ Create a heatmap:
+     
+  #+begin_src elisp
+    (simplotly
+          '((
+             (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
+             (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
+             (y . ("Morning" "Afternoon" "Evening"))
+             (type . "heatmap"))
+            ))
+  #+end_src
+
+  Create histograms
+
+    
+#+begin_src elisp
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4))
+      (type . "histogram"))))
+#+end_src
+
+  For a stacked histogram, pass two or more series as a first argument,
+  then, as a second argume (containing the layout settings) include
+  an alist with values (barmode . "stack").
   
+#+begin_src elisp
+  (simplotly
+   '(((x . (1 2 2 2 1 1 1 4 4 4))
+      (type . "histogram")
+      )
+     ((x . (3 3 2  1 1 1 5 5 5 ))
+      (type . "histogram")
+      ))
+   '((barmode . "stack")))
+#+end_src
+
+
+** <<Create boxplots>>
+
+
+For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
+
+#+begin_src elisp
+
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
+      (type . "box"))
+     ((y . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+For horizontal boxplots, use 'x instead of 'y in the data-series
+nested list.
+
+#+begin_src elisp
+
+  (simplotly
+   '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
+      (type . "box"))
+     ((x . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+Let's create a plot similar to the one in Plotly-javascript tutorial:
+
+#+begin_src elisp
+    (defun random-list(n upper-limit)
+      "Convenience function to create a list
+  of random numbers."
+      (let*
+          ((res '()))
+        (dotimes (x n)
+          (push (random upper-limit) res))
+        (reverse res))
+      )
+
+    (simplotly
+     `(((y . ,(random-list 30 10))
+        (type . "box"))
+       ((y . ,(random-list 30 11))
+        (type . "box"))))
+
+#+end_src
+
+    To include the underlying dots, add:
+
+    - (boxpoints . "all")
+    - (jitter . 0.3)
+    - (pointpos . -1.8)
+
+      to the data series (of course these are just the same values
+      used in the javascript tutorial, you are supposed to use the
+      most appropriate values for your plot).
+
+#+begin_src elisp
+
+  (simplotly
+   '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
+
+      (boxpoints . "all")
+      (jitter . 0.3)
+      (pointpos . -1.8)
+      (type . "box"))
+     ((y . (3 3 2  1 1 1 5 5 5 ))
+      (type . "box"))))
+
+#+end_src
+
+
+*Grouped boxplots*: for each data series, pass both y values (the data
+from which the box should be built) and x values (labels that represent
+the group to which each y-value belongs to).
+
+#+begin_src elisp
+  (setq days
+        '("day 1" "day 1" "day 1" "day 1" "day 1" "day 1"
+
+           "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
+
+
+  (simplotly
+   `((
+      (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
+      (x . ,days)
+      (name . "kale")
+      ;; marker: {color: "#3D9970"}
+      (type . "box"))
+     ((y . [0.6 0.7 0.3 0.6 0.0 0.5 0.7 0.9 0.5 0.8 0.7 0.2])
+      (x . ,days)
+      (name . "radishes")
+      ;; marker: {color: "#FF4136"}
+      (type . "box")
+      )
+     (
+      (y . [0.1 0.3 0.1 0.9 0.6 0.6 0.9 1.0 0.3 0.6 0.8 0.5])
+      (x . ,days)
+      (name . "carrots")
+      ;; marker: {color: "#FF851B"}
+      (type . "box")))
+   '((boxmode . "group")))
+
+#+end_src
+
+
+
+
+
 * Subplots
 
   You need to pass a second argument to the simplotly function (an
@@ -635,3 +730,35 @@ the group to which each y-value belongs to).
         (columns . 2)
         (pattern .  "independent")))))
 #+end_src
+
+
+* Surface plots
+
+ Pass an alist with car equal z and cdr a nested list of
+ height values, and another one with car equal 'type
+ and cdr equal "surface").
+
+#+begin_src elisp
+  (simplotly
+   '((
+      (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
+               (8.89 8.94 8.85 8.94 8.96 8.92) 
+               (8.84 8.9 8.82 8.92 8.93 8.91) 
+               (8.79 8.85 8.79 8.9 8.94 8.92) 
+               (8.79 8.88 8.81 8.9 8.95 8.92) 
+               (8.8 8.82 8.78 8.91 8.94 8.92) 
+               (8.75 8.78 8.77 8.91 8.95 8.92) 
+               (8.8 8.8 8.77 8.91 8.95 8.94) 
+               (8.74 8.81 8.76 8.93 8.98 8.99) 
+               (8.89 8.99 8.92 9.1 9.13 9.11) 
+               (8.97 8.97 8.91 9.09 9.11 9.11) 
+               (9.04 9.08 9.05 9.25 9.28 9.27) 
+               (9 9.01 9 9.2 9.23 9.2) 
+               (8.99 8.99 8.98 9.18 9.2 9.19) 
+               (8.93 8.97 8.97 9.18 9.2 9.18)))
+      (type . "surface"))))
+#+end_src
+
+
+
+

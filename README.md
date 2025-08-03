@@ -1,31 +1,32 @@
 
 # Table of Contents
 
-1.  [Installation](#org8746bbe)
-2.  [Usage - simple plots](#orgb476f90)
-    1.  [Dotcharts](#org68accd0)
-    2.  [Barcharts](#orgc7c9bc4)
-3.  [More complex graphs](#org90ade5e)
-4.  [Piechart](#orgc999d94)
-5.  [Heatmap](#org189ca87)
-6.  [Histograms](#orgc91933c)
-7.  [Boxplots](#org9848602)
-8.  [Surface plots](#orga7bf484)
-9.  [Subplots](#org905f7e6)
+1.  [Installation](#orgbefd577)
+2.  [Usage - simple plots](#org8cf2c29)
+    1.  [Dotcharts](#orgeaeba88)
+    2.  [Barcharts](#org80b06d0)
+3.  [Piechart](#orgb0c4d19)
+4.  [Heatmap](#org2a5a0c1)
+5.  [Histograms](#orgbb6cbbb)
+6.  [Boxplots](#orge62f10b)
+7.  [More complex graphs](#org40921a9)
+    1.  [](#org69c5fbb)
+8.  [Subplots](#org0bfa7b6)
+9.  [Surface plots](#org09d38e5)
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
 It is a simple (and limited in scope) wrapper around [Plotly](https://plotly.com/).
 
 The main workhorse is the `simplolty` function, which translates
-a list list into a javascript element, then embed it into and HTML
+a lisp list into a javascript element, then embed it into an HTML
 file and opens it in a browser.
 
 A few convenience functions such as `dotchart` and `barchart` are
-provided in order to make the creation of such common graph easier.
+provided in order to make the creation of such common graphs easier.
 
 
-<a id="org8746bbe"></a>
+<a id="orgbefd577"></a>
 
 # Installation
 
@@ -39,36 +40,46 @@ M-x eplotly-mode and you are able to use its plotting functions.
 
 To make the plot creation faster (and to be able to create plots
 when you are not connected to the Internet), we suggest to download
-locally a copy of plotly.js and do the following:
+locally a copy of plotly.js, i.e. something like the following:
 
 1.  Get plotly.js from <https://plotly.com/javascript/getting-started/>
     (see the "Download" paragraph) and store it somewere in
     your machine.
-2.  Set the variable **plotly-dir** equal to the path to the
-    directory where you've downloaded the plotly.min.js file
+2.  Set the variable **plotly-dir** equal to the path of the
+    directory where you've downloaded the plotly.min.js file, e.g.
+    write in your `.emacs` something like
     
         (setq *plotly-dir* "/path/to/plotlyjs/")
 
 
-<a id="orgb476f90"></a>
+<a id="org8cf2c29"></a>
 
 # Usage - simple plots
 
 
-<a id="org68accd0"></a>
+<a id="orgeaeba88"></a>
 
 ## Dotcharts
 
-You can plot a dotchart via the `dotchart` function as passing
-lists of 2 series of values (the first one for the x values and
-the second for the y values), e.g.
+You can plot a dotchart via the `dotchart` function: it accepts one or
+more arguments:
+
+-   the first one is a list of one or more lists that contain the data
+    to plot, plus addition parameters
+-   the rest of the arguments are in the form of :keys and contain parameters
+    for the chart layout.
+
+Eg. to plot a series of dots, simply pass a list whose car contains
+2 lists, the first one containing the values of the x-coordinates of
+the dots, the second one containing the y-values.
 
     
     (dotchart
      '(((1 2 3 4)
         (10 11 12 13))))
 
-Suppose we want to add a second series of dots:
+Suppose we want to add a second series of dots, simply add another
+nested list with x and y values to the data-series.
 
     
     (dotchart
@@ -80,7 +91,7 @@ Suppose we want to add a second series of dots:
         (15 15 15 15))
        ))
 
-For each series we can customize various parameters (these parameters try to
+For each series we can customize various some parameters (these parameters try to
 follow the same names used in Plotly). If we want to plot a line that passes
 through the dots, we should pass the value "lines" to the key :mode:
 
@@ -96,16 +107,8 @@ To plot both dots and line, just use :mode "lines+markers":
     (dotchart
      '(((1 2 3 4)
         (10 11 12 13)
-       :mode "lines+markers")))
-
-If you want to add some text on every dot:
-
-    
-    (dotchart
-     '(((1 2 3 4)
-        (10 11 12 13)
        :mode "lines+markers"
-       :text '("A" "B" "C"))))
+       )))
 
 The following are some of the keys that you can use for each data seris:
 
@@ -120,17 +123,25 @@ The following are some of the keys that you can use for each data seris:
     or a series of colors, one for each point.
 -   **:symbol:** the symbol to be used to represent the dots.
 
-To set the title of the chart, you can set the keyword title (Nota Bene:
+To set the title of the chart, you can set the keyword :title (Nota Bene:
 this has to be set 'outside' the list of data series - please note the
 parenthesis in the following examples):
 
     
     (dotchart
-     '(((1 2 3) (3 3 3) :mode "markers"
+     '(
+       ;; first series of data to plot
+       ((1 2 3) (3 3 3) :mode "markers"
         :size (20 30 40) :color "blue")
+       ;; second series
        ((1 2 3) (5 2 1) :mode "lines" :text '("A" "B" "C"))
+       ;; third series
        ((1 2 3) (5 5 8) :mode "lines+markers" :name "Team C" :size 20))
-       :title "My first plots")
+     ;; layout parameters
+     :title "My first plots")
+
+You can also customize the color and the shape of each dot in a data-series
+via the :color and :symbol keys.
 
     
     (dotchart
@@ -143,11 +154,11 @@ parenthesis in the following examples):
      :title "Using Dotchart elisp function")
 
 
-<a id="orgc7c9bc4"></a>
+<a id="org80b06d0"></a>
 
 ## Barcharts
 
-To create barchart you need to pass lists of data for every series of bars.
+To create a barchart you need to pass lists of data for every series of bars.
 Each series should be composed of:
 
 -   a first list of labels for each bar
@@ -156,17 +167,24 @@ Each series should be composed of:
 
 Then - after the data series - we can also pass the following values:
 
--   **:barmode:** if "stack" the bars are stacked
+-   **:barmode:** if set to "stack", the bars are stacked
 -   **:title:** title of the chart
 
-    (barchart '((("giraffes" "orangutans" "monkeys")
-             (20 14 23)
-             :name "SF Zoo")
-            (("giraffes" "orangutans" "monkeys")
-             (12 18 29)
-             :name "LA Zoo"))
-          :barmode  "stack"
-          :title "Simple Barcharts")
+    (barchart '(
+                ;; first series of bars
+                (
+                 ;; series of labels for the bars
+                 ("giraffes" "orangutans" "monkeys")
+                 ;; height of the bars
+                 (20 14 23)
+                 ;; name of the series
+                 :name "SF Zoo")
+                ;; second series od bars
+                (("giraffes" "orangutans" "monkeys")
+                 (12 18 29)
+                 :name "LA Zoo"))
+              :barmode  "stack"
+              :title "Simple Barcharts")
 
 You can also add text to each bar via the :text keyword:
 
@@ -177,7 +195,7 @@ You can also add text to each bar via the :text keyword:
                  :text  ("4.17 below the mean" "4.17 below the mean" "0.17 below the mean" "0.17 below the mean" "0.83 above the mean" "7.83 above the mean"))
                 ))
 
-The angle of the tick marks can be rotated via the :tickangle parameter:
+The angle of the text at the tick marks can be rotated via the :tickangle parameter:
 
     (barchart  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
               (8.0 8.0 12.0 12.0 13.0 20.0)
@@ -185,7 +203,179 @@ The angle of the tick marks can be rotated via the :tickangle parameter:
            :tickangle -45)
 
 
-<a id="org90ade5e"></a>
+<a id="orgb0c4d19"></a>
+
+# Piechart
+
+To create a simple pie chart, pass a data series whose elements
+are
+
+-   values for each slice of the piechart
+-   labels for each slice of the piechart
+
+    (pie
+        '(
+          ((30 20 50)
+           ("Residential" "Non-Residential" "Utility")
+           )))
+
+To create a doughnut chart, simply include the additiona parameter
+'hole in the alist:
+
+    (pie
+        '(
+          ((16 15 12 6 5 4 42)
+           ("US" "China" "European Union" "Russian Federation"
+                      "Brazil" "India" "Rest of World" )
+           :hole .7
+           :name "GHG Emissions")
+           ))
+
+
+<a id="org2a5a0c1"></a>
+
+# Heatmap
+
+To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
+a nested list built according to the following criteria:
+
+-   each nested list contains the data of a row (first nested list represents
+    the first row at the bottom of the heatmap, the last nested list represents
+    the row at the top of the heatmap).
+-   Each cell in each nested list represents a cell of the heatmap (cells
+    are represented from left to right)
+    
+    I.e. to obtain the following heatmap
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">6</td>
+<td class="org-right">7</td>
+<td class="org-right">8</td>
+</tr>
+
+
+<tr>
+<td class="org-right">9</td>
+<td class="org-right">10</td>
+<td class="org-right">11</td>
+<td class="org-right">12</td>
+</tr>
+</tbody>
+</table>
+
+you should use the following nested list:
+
+'((9 10 11 12) (5 6 7 8) (1 2 3 4))
+
+    
+    (heatmap
+            '((
+               ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))))
+
+If you want to add labels to the x and y axis, just set the
+:x and :y parameters with list containing the labels (pay
+attention to the lenght of each list, which should correspond
+to the size of the heatmap, i.e. the length of the :x list should
+be equal to the number of columnts of the map, while the
+length of the :y list should be equal to the number of rows):
+
+    
+    (heatmap
+     '((
+        ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20))
+        :x ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
+        :y ("Morning" "Afternoon" "Evening"))))
+
+
+<a id="orgbb6cbbb"></a>
+
+# Histograms
+
+To plot histograms you can use the function `hist`
+
+    (hist
+     '(((1 2 2 2 1 1 1 4 4 4)
+        )))
+
+By default the bars are plotted vertically; to have horizontal
+bars, set the key :direction to "horizontal";
+
+    (hist
+     '(((1 2 2 2 1 1 1 4 4 4)
+        :direction "horizontal"
+        )))
+
+For a stacked histogram, pass two or more series as a first argument,
+then, then pass the :barmode key set to "stack".
+
+    (hist
+     '(((1 2 2 2 1 1 1 4 4 4))
+       ((3 3 2  1 1 1 5 5 5 )))
+     :barmode "stack")
+
+
+<a id="orge62f10b"></a>
+
+# Boxplots
+
+For vertical boxplots, pass lists of data for each bar
+
+    
+    (box
+     '((
+        (1 2 2 2 1 1 1 4 4 4 10 -5))
+       ((3 3 2  1 1 1 5 5 5 ))))
+
+You can specify the names of each box, by using the :name key
+
+    
+    (box
+     '((
+        (1 2 2 2 1 1 1 4 4 4 10 -5)
+        :name "first")
+       ((3 3 2  1 1 1 5 5 5 )
+        :name "second")))
+
+For horizontal boxplots, set the :direction key to "horizontal"
+
+    
+    (box
+     '((
+        (1 2 2 2 1 1 1 4 4 4 10 -5)
+        :name "first"
+        :direction "horizontal")
+       ((3 3 2  1 1 1 5 5 5 )
+        :name "second"
+        :direction "horizontal"))
+     )
+
+**Grouped boxplots**: for grouped boxplots it is more convenient to
+use the **simplot** function (see [7.1](#orge1e58fd) paragraph)
+
+
+<a id="org40921a9"></a>
 
 # More complex graphs
 
@@ -305,17 +495,16 @@ Set up colors, symbol and other parameters for a dotchart:
                     (symbol . ("circle" "square" "diamond" "cross"))
                     )))))
 
-
-<a id="orgc999d94"></a>
-
-# Piechart
+Create a piechart:
 
     (simplotly
         '(
-          ((values  30 20 50)
+          ((values . (30 20 50))
            (labels . ("Residential" "Non-Residential" "Utility"))
            (type . "pie")
            )))
+
+Create a doughnut chart:
 
     (simplotly
         '(
@@ -324,67 +513,11 @@ Set up colors, symbol and other parameters for a dotchart:
                       "Brazil" "India" "Rest of World" ))
            (type . "pie")
            (hoverinfo . "label+percent+name")
-           (hole . .4)
+           (hole . .7)
            (name . "GHG Emissions")
            )))
 
-
-<a id="org189ca87"></a>
-
-# Heatmap
-
-To build heatmap you need to pass an alist with car equal to 'z and cdr equal to a
-a nested list whish should follow these criteria:
-
--   each nested list contains the data of a row (first nested list represents
-    the first row at the bottom of the heatmap, the last nested list represents
-    the row at the top of the heatmap).
--   Each cell in each nested list represents a cell of the heatmap (cells
-    are represented from left to right)
-    
-    I.e. to obtain the following heatmap
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">1</td>
-<td class="org-right">2</td>
-<td class="org-right">3</td>
-<td class="org-right">4</td>
-</tr>
-
-
-<tr>
-<td class="org-right">5</td>
-<td class="org-right">6</td>
-<td class="org-right">7</td>
-<td class="org-right">8</td>
-</tr>
-
-
-<tr>
-<td class="org-right">9</td>
-<td class="org-right">10</td>
-<td class="org-right">11</td>
-<td class="org-right">12</td>
-</tr>
-</tbody>
-</table>
-
-you should use the following nested list:
-
-'((9 10 11 12) (5 6 7 8) (1 2 3 4))
+Create a heatmap:
 
     (simplotly
           '((
@@ -394,20 +527,7 @@ you should use the following nested list:
              (type . "heatmap"))
             ))
 
-
-<a id="orgc91933c"></a>
-
-# Histograms
-
-Vertical histograms, the data-series list must contain
-a nested list with car equal 'x
-
-    (simplotly
-     '(((x . (1 2 2 2 1 1 1 4 4 4))
-        (type . "histogram"))))
-
-For horizontal histogram, use 'y instead of 'x for
-the car of the data-series list
+Create histograms
 
     (simplotly
      '(((y . (1 2 2 2 1 1 1 4 4 4))
@@ -419,17 +539,19 @@ an alist with values (barmode . "stack").
 
     (simplotly
      '(((x . (1 2 2 2 1 1 1 4 4 4))
-        (type . "histogram"))
+        (type . "histogram")
+        )
        ((x . (3 3 2  1 1 1 5 5 5 ))
-        (type . "histogram")))
+        (type . "histogram")
+        ))
      '((barmode . "stack")))
 
 
-<a id="org9848602"></a>
+<a id="org69c5fbb"></a>
 
-# Boxplots
+## <a id="orge1e58fd"></a>
 
-For vertical boxplots, pass alists with car equal to 'y:
+For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
     
     (simplotly
@@ -448,7 +570,7 @@ nested list.
        ((x . (3 3 2  1 1 1 5 5 5 ))
         (type . "box"))))
 
-Let's create a plot similar to the one in Plotly-javascript tutorial
+Let's create a plot similar to the one in Plotly-javascript tutorial:
 
       (defun random-list(n upper-limit)
         "Convenience function to create a list
@@ -466,13 +588,13 @@ Let's create a plot similar to the one in Plotly-javascript tutorial
          ((y . ,(random-list 30 11))
           (type . "box"))))
 
-To include underlaying dots, add:
+To include the underlying dots, add:
 
 -   (boxpoints . "all")
 -   (jitter . 0.3)
 -   (pointpos . -1.8)
     
-    To the data series (of course these are just the same values
+    to the data series (of course these are just the same values
     used in the javascript tutorial, you are supposed to use the
     most appropriate values for your plot).
 
@@ -487,7 +609,7 @@ To include underlaying dots, add:
        ((y . (3 3 2  1 1 1 5 5 5 ))
         (type . "box"))))
 
-Gropued boxplots: for each data series, pass both y values (the data
+**Grouped boxplots**: for each data series, pass both y values (the data
 from which the box should be built) and x values (labels that represent
 the group to which each y-value belongs to).
 
@@ -519,35 +641,7 @@ the group to which each y-value belongs to).
      '((boxmode . "group")))
 
 
-<a id="orga7bf484"></a>
-
-# Surface plots
-
-Pass an alist with car equal z and cdr a nested list of
-height values, and another one with car equal 'type
-and cdr equal "surface").
-
-    (simplotly
-     '((
-        (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
-                 (8.89 8.94 8.85 8.94 8.96 8.92) 
-                 (8.84 8.9 8.82 8.92 8.93 8.91) 
-                 (8.79 8.85 8.79 8.9 8.94 8.92) 
-                 (8.79 8.88 8.81 8.9 8.95 8.92) 
-                 (8.8 8.82 8.78 8.91 8.94 8.92) 
-                 (8.75 8.78 8.77 8.91 8.95 8.92) 
-                 (8.8 8.8 8.77 8.91 8.95 8.94) 
-                 (8.74 8.81 8.76 8.93 8.98 8.99) 
-                 (8.89 8.99 8.92 9.1 9.13 9.11) 
-                 (8.97 8.97 8.91 9.09 9.11 9.11) 
-                 (9.04 9.08 9.05 9.25 9.28 9.27) 
-                 (9 9.01 9 9.2 9.23 9.2) 
-                 (8.99 8.99 8.98 9.18 9.2 9.19) 
-                 (8.93 8.97 8.97 9.18 9.2 9.18)))
-        (type . "surface"))))
-
-
-<a id="org905f7e6"></a>
+<a id="org0bfa7b6"></a>
 
 # Subplots
 
@@ -588,4 +682,32 @@ following will create a 2\*2 grid of charts
          ((rows . 2)
           (columns . 2)
           (pattern .  "independent")))))
+
+
+<a id="org09d38e5"></a>
+
+# Surface plots
+
+Pass an alist with car equal z and cdr a nested list of
+height values, and another one with car equal 'type
+and cdr equal "surface").
+
+    (simplotly
+     '((
+        (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
+                 (8.89 8.94 8.85 8.94 8.96 8.92) 
+                 (8.84 8.9 8.82 8.92 8.93 8.91) 
+                 (8.79 8.85 8.79 8.9 8.94 8.92) 
+                 (8.79 8.88 8.81 8.9 8.95 8.92) 
+                 (8.8 8.82 8.78 8.91 8.94 8.92) 
+                 (8.75 8.78 8.77 8.91 8.95 8.92) 
+                 (8.8 8.8 8.77 8.91 8.95 8.94) 
+                 (8.74 8.81 8.76 8.93 8.98 8.99) 
+                 (8.89 8.99 8.92 9.1 9.13 9.11) 
+                 (8.97 8.97 8.91 9.09 9.11 9.11) 
+                 (9.04 9.08 9.05 9.25 9.28 9.27) 
+                 (9 9.01 9 9.2 9.23 9.2) 
+                 (8.99 8.99 8.98 9.18 9.2 9.19) 
+                 (8.93 8.97 8.97 9.18 9.2 9.18)))
+        (type . "surface"))))
 
