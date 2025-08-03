@@ -1,18 +1,18 @@
 
 # Table of Contents
 
-1.  [Installation](#orgbefd577)
-2.  [Usage - simple plots](#org8cf2c29)
-    1.  [Dotcharts](#orgeaeba88)
-    2.  [Barcharts](#org80b06d0)
-3.  [Piechart](#orgb0c4d19)
-4.  [Heatmap](#org2a5a0c1)
-5.  [Histograms](#orgbb6cbbb)
-6.  [Boxplots](#orge62f10b)
-7.  [More complex graphs](#org40921a9)
-    1.  [](#org69c5fbb)
-8.  [Subplots](#org0bfa7b6)
-9.  [Surface plots](#org09d38e5)
+1.  [Installation](#org59a31cb)
+2.  [Usage - simple plots](#org370720f)
+    1.  [Dotcharts](#org26a1272)
+    2.  [Barcharts](#org4d8e010)
+3.  [Piechart](#org02398c0)
+4.  [Heatmap](#orgd1d8bc5)
+5.  [Histograms](#orgb9adfd1)
+6.  [Boxplots](#org1019849)
+7.  [More complex graphs](#orgb44eedb)
+    1.  [](#orgce5e892)
+8.  [Subplots](#org4bedcde)
+9.  [Surface plots](#orga86def8)
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
@@ -26,7 +26,7 @@ A few convenience functions such as `dotchart` and `barchart` are
 provided in order to make the creation of such common graphs easier.
 
 
-<a id="orgbefd577"></a>
+<a id="org59a31cb"></a>
 
 # Installation
 
@@ -52,12 +52,12 @@ locally a copy of plotly.js, i.e. something like the following:
         (setq *plotly-dir* "/path/to/plotlyjs/")
 
 
-<a id="org8cf2c29"></a>
+<a id="org370720f"></a>
 
 # Usage - simple plots
 
 
-<a id="orgeaeba88"></a>
+<a id="org26a1272"></a>
 
 ## Dotcharts
 
@@ -154,7 +154,7 @@ via the :color and :symbol keys.
      :title "Using Dotchart elisp function")
 
 
-<a id="org80b06d0"></a>
+<a id="org4d8e010"></a>
 
 ## Barcharts
 
@@ -203,7 +203,7 @@ The angle of the text at the tick marks can be rotated via the :tickangle parame
            :tickangle -45)
 
 
-<a id="orgb0c4d19"></a>
+<a id="org02398c0"></a>
 
 # Piechart
 
@@ -232,7 +232,7 @@ To create a doughnut chart, simply include the additiona parameter
            ))
 
 
-<a id="org2a5a0c1"></a>
+<a id="orgd1d8bc5"></a>
 
 # Heatmap
 
@@ -309,7 +309,7 @@ length of the :y list should be equal to the number of rows):
         :y ("Morning" "Afternoon" "Evening"))))
 
 
-<a id="orgbb6cbbb"></a>
+<a id="orgb9adfd1"></a>
 
 # Histograms
 
@@ -336,7 +336,7 @@ then, then pass the :barmode key set to "stack".
      :barmode "stack")
 
 
-<a id="orge62f10b"></a>
+<a id="org1019849"></a>
 
 # Boxplots
 
@@ -372,10 +372,10 @@ For horizontal boxplots, set the :direction key to "horizontal"
      )
 
 **Grouped boxplots**: for grouped boxplots it is more convenient to
-use the **simplot** function (see [7.1](#orge1e58fd) paragraph)
+use the **simplot** function (see [7.1](#org01f3828) paragraph)
 
 
-<a id="org40921a9"></a>
+<a id="orgb44eedb"></a>
 
 # More complex graphs
 
@@ -547,9 +547,9 @@ an alist with values (barmode . "stack").
      '((barmode . "stack")))
 
 
-<a id="org69c5fbb"></a>
+<a id="orgce5e892"></a>
 
-## <a id="orge1e58fd"></a>
+## <a id="org01f3828"></a>
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
@@ -641,7 +641,7 @@ the group to which each y-value belongs to).
      '((boxmode . "group")))
 
 
-<a id="org0bfa7b6"></a>
+<a id="org4bedcde"></a>
 
 # Subplots
 
@@ -684,7 +684,7 @@ following will create a 2\*2 grid of charts
           (pattern .  "independent")))))
 
 
-<a id="org09d38e5"></a>
+<a id="orga86def8"></a>
 
 # Surface plots
 

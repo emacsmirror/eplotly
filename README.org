@@ -243,6 +243,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 #+end_src
 
+
 * Heatmap
 
   To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
@@ -372,6 +373,7 @@ For horizontal boxplots, set the :direction key to "horizontal"
 
 *Grouped boxplots*: for grouped boxplots it is more convenient to
 use the *simplot* function (see [[Create boxplots]] paragraph)
+
 
 * More complex graphs
 
