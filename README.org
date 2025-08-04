@@ -5,7 +5,7 @@ files, without the need for external programs such as R or gnuplot.
 It is a simple (and limited in scope) wrapper around [[https://plotly.com/][Plotly]].
 
 The main workhorse is the ~eplotly~ function, which translates
-a lisp list into a javascript element, then embed it into an HTML
+a lisp list into a javascript element, then embeds it into an HTML
 file and opens it in a browser: users already familiar with ~Plotly~
 might prefer to use this function.
 
@@ -13,7 +13,7 @@ The following utility functions can also be used in place of ~eplotly~
 to create common graphs (they assume some default parameters, thus
 simplify the instructions to build plots):
 
- - [[Dotcharts][eplotly-dot]] :: for dotcharts
+ - [[Dotcharts][~eplotly-dot~]] :: for dotcharts
  - [[Barcharts][~eplotly-bar~]] :: for barcharts
  - [[Piechart][~eplotly-pie~]] :: for pie charts
  - [[Histograms][~eplotly-hist~]] :: for histograms
@@ -46,7 +46,7 @@ locally a copy of plotly.js, i.e. something like the following:
    write in your ~.emacs~ something like
 
    #+begin_src elisp
-     (setq *plotly-dir* "/path/to/plotlyjs/")
+     (setq eplotly-dir "/path/to/plotlyjs/")
    #+end_src
 
 
@@ -57,8 +57,8 @@ locally a copy of plotly.js, i.e. something like the following:
    You can plot a dotchart via the ~eplotly-dot~ function: it accepts one or
    more arguments:
 
-    - the first one is a list of one or more lists that contain the data
-      to plot, plus addition parameters
+    - the first one is a list of one or more lists; each nested list contain
+      the data to plot, plus addition parameters (see examples)
     - the rest of the arguments are in the form of :keys and contain parameters
       for the chart layout.
 
@@ -90,7 +90,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
    For each series we can customize various some parameters (these parameters try to
    follow the same names used in Plotly). If we want to plot a line that passes
-   through the dots, we should pass the value "lines" to the key :mode:
+   through the dots, we should pass the value "lines" to the key :mode
 
 
    #+begin_src elisp
@@ -117,13 +117,13 @@ locally a copy of plotly.js, i.e. something like the following:
   The following are some of the keys that you can use for each data seris:
 
   - :name :: name of the series
-  - :size :: size of the dots; if a single number is passed, than it will be
+  - :size :: size of the dots; if a single number is passed, that will be
     used for all dots; if a list of values is passed, those will be used as
     size for every single plot (in this case, make sure that you pass a size
     value for every single plot, i.e. the lenght of the :size list should be
     the same as the lenght of the x and y values).
   - :color :: like :size, you can pass a single value (either a color name or a
-    string represening rgb values - see examples) tha will be used for all points
+    string represening rgb values - see examples) that will be used for all points
     or a series of colors, one for each point.
   - :symbol :: the symbol to be used to represent the dots.
     
@@ -235,10 +235,10 @@ locally a copy of plotly.js, i.e. something like the following:
          )))
 #+end_src
 
-#+RESULTS:
 
   To create a doughnut chart, simply include the additiona parameter
-  'hole in the alist:
+  'hole in the alist (its value should be comprised between
+  0 and 1):
 
 #+begin_src elisp
    (eplotly-pie
@@ -262,8 +262,8 @@ locally a copy of plotly.js, i.e. something like the following:
   - each nested list contains the data of a row (first nested list represents
     the first row at the bottom of the heatmap, the last nested list represents
     the row at the top of the heatmap).
-  - Each cell in each nested list represents a cell of the heatmap (cells
-    are represented from left to right)
+  - Each value in each nested list represents the value of a cell of the
+     heatmap (cells are represented from left to right)
 
     I.e. to obtain the following heatmap
 
@@ -337,7 +337,7 @@ locally a copy of plotly.js, i.e. something like the following:
 ** Boxplots <<Boxplots>>
 
 
-For vertical boxplots, pass lists of data for each bar
+For vertical boxplots, pass lists of data for each box
 
 
 #+begin_src elisp
@@ -387,7 +387,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
 
 * More complex graphs via ~eplotly~
 
-  The functions ~eplotly-bar~ and ~eplotly-dot~ are wrappers around the function ~eplotly~
+  The above mentioned functions are just wrappers for the function ~eplotly~
   which can be used to create more complicated plots and allows for additional
   fine tunings of those plots.
 
@@ -401,7 +401,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   2. a second (optional) alist of parameters determining the ~layout~ of the chart.
      
 
-    #+begin_src elisp
+#+begin_src elisp
       (eplotly
         '(
           ((x 1 2 3 4 5)
@@ -424,7 +424,6 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
            (textposition . "bottom center")
            (marker . (( size . 12 ))))
           )
-
         '((xaxis . ((
                      range . (-2 10 ))))
           (yaxis . ((range . (0 8))))
@@ -437,21 +436,21 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
                               ))))
           (title . ((text . "Data Labels on the Plot"))))
         )
-  #+end_src
+#+end_src
 
 
  Create a basic barchart with ~eplotly~:
 
- #+begin_src elisp
+#+begin_src elisp
    (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
                    (type . "bar")))
            '((title . "Barchart")))
- #+end_src
+#+end_src
 
    Create a grouped barchart with ~eplotly~:
 
-   #+begin_src elisp
+#+begin_src elisp
      (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
                    (name . "SF Zoo")
@@ -464,7 +463,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
                  )
            '((barmode . "group"))
            )
-   #+end_src
+#+end_src
 
   Create a stacked barchart with ~eplotly~:
 
@@ -589,7 +588,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
 #+end_src
 
 
-** <<Create boxplots>>
+** Create boxplots <<Create boxplots>>
 
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
