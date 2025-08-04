@@ -1,32 +1,33 @@
 
 # Table of Contents
 
-1.  [Installation](#org59a31cb)
-2.  [Usage - simple plots](#org370720f)
-    1.  [Dotcharts](#org26a1272)
-    2.  [Barcharts](#org4d8e010)
-3.  [Piechart](#org02398c0)
-4.  [Heatmap](#orgd1d8bc5)
-5.  [Histograms](#orgb9adfd1)
-6.  [Boxplots](#org1019849)
-7.  [More complex graphs](#orgb44eedb)
-    1.  [](#orgce5e892)
-8.  [Subplots](#org4bedcde)
-9.  [Surface plots](#orga86def8)
+1.  [Installation](#orge844868)
+2.  [Usage - simple plots](#orgf35af6b)
+    1.  [Dotcharts](#org94e3c37)
+    2.  [Barcharts](#org0e364d9)
+3.  [Piechart](#org44ef748)
+4.  [Heatmap](#org00b02c8)
+5.  [Histograms](#orgdf2cec2)
+6.  [Boxplots](#org24c0af3)
+7.  [More complex graphs](#orga0d5464)
+    1.  [](#orgfc9203e)
+8.  [Subplots](#orgf9654c9)
+9.  [Surface plots](#org63cf351)
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
 It is a simple (and limited in scope) wrapper around [Plotly](https://plotly.com/).
 
-The main workhorse is the `simplolty` function, which translates
+The main workhorse is the `eplotly` function, which translates
 a lisp list into a javascript element, then embed it into an HTML
-file and opens it in a browser.
+file and opens it in a browser: users already familiar with `Plotly`
+might prefer to use this function.
 
-A few convenience functions such as `dotchart` and `barchart` are
+A few convenience functions such as `eplotly-dot` and `eplotly-bar` are
 provided in order to make the creation of such common graphs easier.
 
 
-<a id="org59a31cb"></a>
+<a id="orge844868"></a>
 
 # Installation
 
@@ -52,16 +53,16 @@ locally a copy of plotly.js, i.e. something like the following:
         (setq *plotly-dir* "/path/to/plotlyjs/")
 
 
-<a id="org370720f"></a>
+<a id="orgf35af6b"></a>
 
 # Usage - simple plots
 
 
-<a id="org26a1272"></a>
+<a id="org94e3c37"></a>
 
 ## Dotcharts
 
-You can plot a dotchart via the `dotchart` function: it accepts one or
+You can plot a dotchart via the `eplotly-dot` function: it accepts one or
 more arguments:
 
 -   the first one is a list of one or more lists that contain the data
@@ -74,7 +75,7 @@ Eg. to plot a series of dots, simply pass a list whose car contains
 the dots, the second one containing the y-values.
 
     
-    (dotchart
+    (eplotly-dot
      '(((1 2 3 4)
         (10 11 12 13))))
 
@@ -82,7 +83,7 @@ Suppose we want to add a second series of dots, simply add another
 nested list with x and y values to the data-series.
 
     
-    (dotchart
+    (eplotly-dot
      '(
        ((1 2 3 4)
         (10 11 12 13))
@@ -96,7 +97,7 @@ follow the same names used in Plotly). If we want to plot a line that passes
 through the dots, we should pass the value "lines" to the key :mode:
 
     
-    (dotchart
+    (eplotly-dot
      '(((1 2 3 4)
         (10 11 12 13)
        :mode "lines")))
@@ -104,7 +105,7 @@ through the dots, we should pass the value "lines" to the key :mode:
 To plot both dots and line, just use :mode "lines+markers":
 
     
-    (dotchart
+    (eplotly-dot
      '(((1 2 3 4)
         (10 11 12 13)
        :mode "lines+markers"
@@ -128,7 +129,7 @@ this has to be set 'outside' the list of data series - please note the
 parenthesis in the following examples):
 
     
-    (dotchart
+    (eplotly-dot
      '(
        ;; first series of data to plot
        ((1 2 3) (3 3 3) :mode "markers"
@@ -144,17 +145,17 @@ You can also customize the color and the shape of each dot in a data-series
 via the :color and :symbol keys.
 
     
-    (dotchart
+    (eplotly-dot
      '(((1 2 3 4)
         (10 11 12 13)
         :size (10 20 30 30)
         :color ("rgb(93 164 214)" "rgb(255 144 14)"  "rgb(44 160 101)" "rgb(255 65 54)")
         :symbol  ("circle" "square" "diamond" "cross")))
     
-     :title "Using Dotchart elisp function")
+     :title "Using eplotly-dot elisp function")
 
 
-<a id="org4d8e010"></a>
+<a id="org0e364d9"></a>
 
 ## Barcharts
 
@@ -170,7 +171,7 @@ Then - after the data series - we can also pass the following values:
 -   **:barmode:** if set to "stack", the bars are stacked
 -   **:title:** title of the chart
 
-    (barchart '(
+    (eplotly-bar '(
                 ;; first series of bars
                 (
                  ;; series of labels for the bars
@@ -189,7 +190,7 @@ Then - after the data series - we can also pass the following values:
 You can also add text to each bar via the :text keyword:
 
     
-    (barchart '((
+    (eplotly-bar '((
                  ("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
                  (8.0 8.0 12.0 12.0 13.0 20.0)
                  :text  ("4.17 below the mean" "4.17 below the mean" "0.17 below the mean" "0.17 below the mean" "0.83 above the mean" "7.83 above the mean"))
@@ -197,13 +198,13 @@ You can also add text to each bar via the :text keyword:
 
 The angle of the text at the tick marks can be rotated via the :tickangle parameter:
 
-    (barchart  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
+    (eplotly-bar  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
               (8.0 8.0 12.0 12.0 13.0 20.0)
               :text  (8.0 8.0 12.0 12.0 13.0 20.0)))
            :tickangle -45)
 
 
-<a id="org02398c0"></a>
+<a id="org44ef748"></a>
 
 # Piechart
 
@@ -213,7 +214,7 @@ are
 -   values for each slice of the piechart
 -   labels for each slice of the piechart
 
-    (pie
+    (eplotly-pie
         '(
           ((30 20 50)
            ("Residential" "Non-Residential" "Utility")
@@ -222,7 +223,7 @@ are
 To create a doughnut chart, simply include the additiona parameter
 'hole in the alist:
 
-    (pie
+    (eplotly-pie
         '(
           ((16 15 12 6 5 4 42)
            ("US" "China" "European Union" "Russian Federation"
@@ -232,7 +233,7 @@ To create a doughnut chart, simply include the additiona parameter
            ))
 
 
-<a id="orgd1d8bc5"></a>
+<a id="org00b02c8"></a>
 
 # Heatmap
 
@@ -290,7 +291,7 @@ you should use the following nested list:
 '((9 10 11 12) (5 6 7 8) (1 2 3 4))
 
     
-    (heatmap
+    (eplotly-heatmap
             '((
                ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))))
 
@@ -302,27 +303,27 @@ be equal to the number of columnts of the map, while the
 length of the :y list should be equal to the number of rows):
 
     
-    (heatmap
+    (eplotly-heatmap
      '((
         ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20))
         :x ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
         :y ("Morning" "Afternoon" "Evening"))))
 
 
-<a id="orgb9adfd1"></a>
+<a id="orgdf2cec2"></a>
 
 # Histograms
 
-To plot histograms you can use the function `hist`
+To plot histograms you can use the function `eplotly-hist`
 
-    (hist
+    (eplotly-hist
      '(((1 2 2 2 1 1 1 4 4 4)
         )))
 
 By default the bars are plotted vertically; to have horizontal
 bars, set the key :direction to "horizontal";
 
-    (hist
+    (eplotly-hist
      '(((1 2 2 2 1 1 1 4 4 4)
         :direction "horizontal"
         )))
@@ -330,20 +331,20 @@ bars, set the key :direction to "horizontal";
 For a stacked histogram, pass two or more series as a first argument,
 then, then pass the :barmode key set to "stack".
 
-    (hist
+    (eplotly-hist
      '(((1 2 2 2 1 1 1 4 4 4))
        ((3 3 2  1 1 1 5 5 5 )))
      :barmode "stack")
 
 
-<a id="org1019849"></a>
+<a id="org24c0af3"></a>
 
 # Boxplots
 
 For vertical boxplots, pass lists of data for each bar
 
     
-    (box
+    (eplotly-box
      '((
         (1 2 2 2 1 1 1 4 4 4 10 -5))
        ((3 3 2  1 1 1 5 5 5 ))))
@@ -351,7 +352,7 @@ For vertical boxplots, pass lists of data for each bar
 You can specify the names of each box, by using the :name key
 
     
-    (box
+    (eplotly-box
      '((
         (1 2 2 2 1 1 1 4 4 4 10 -5)
         :name "first")
@@ -361,7 +362,7 @@ You can specify the names of each box, by using the :name key
 For horizontal boxplots, set the :direction key to "horizontal"
 
     
-    (box
+    (eplotly-box
      '((
         (1 2 2 2 1 1 1 4 4 4 10 -5)
         :name "first"
@@ -372,14 +373,14 @@ For horizontal boxplots, set the :direction key to "horizontal"
      )
 
 **Grouped boxplots**: for grouped boxplots it is more convenient to
-use the **simplot** function (see [7.1](#org01f3828) paragraph)
+use the **simplot** function (see [7.1](#org92c46e6) paragraph)
 
 
-<a id="orgb44eedb"></a>
+<a id="orga0d5464"></a>
 
 # More complex graphs
 
-The functions `barchart` and `dotchart` are wrappers around the function `simplotly`
+The functions `eplotly-bar` and `eplotly-dot` are wrappers around the function `eplotly`
 which can be used to create more complicated plots and allows for additional
 fine tunings of those plots.
 
@@ -388,11 +389,11 @@ This function accepts 2 arguments:
 1.  the first is a series of one or more alists; each alist follows the structure
     of the javascript code used by plotly.js; heare are some example of its usage
      (please refer to the potly javascript documentation to see all the avaiable
-     parameters - though it is not guaranteed that `simplotly` will accept
+     parameters - though it is not guaranteed that `eplotly` will accept
       all such parameters).
 2.  a second (optional) alist of parameters determining the `layout` of the chart.
 
-    (simplotly
+    (eplotly
       '(
         ((x 1 2 3 4 5)
          (y . (1 6 3 6 1))
@@ -428,16 +429,16 @@ This function accepts 2 arguments:
         (title . ((text . "Data Labels on the Plot"))))
       )
 
-Create a basic barchart with `simplotly`:
+Create a basic barchart with `eplotly`:
 
-    (simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+    (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                     (y . (20 14 23))
                     (type . "bar")))
             '((title . "Barchart")))
 
-Create a grouped barchart with `simplotly`:
+Create a grouped barchart with `eplotly`:
 
-    (simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+    (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                   (y . (20 14 23))
                   (name . "SF Zoo")
                   (type . "bar")
@@ -450,12 +451,12 @@ Create a grouped barchart with `simplotly`:
           '((barmode . "group"))
           )
 
-Create a stacked barchart with `simplotly`:
+Create a stacked barchart with `eplotly`:
 
     
     
     ;; stacked
-    (simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+    (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                        (y . (20 14 23))
                        (name . "SF Zoo")
                        (type . "bar")
@@ -475,7 +476,7 @@ Create a stacked barchart with `simplotly`:
 Create a scatter Plot with a Color Dimension
 
     
-    (simplotly
+    (eplotly
      '(((y . (5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5))
         (mode . "markers")
         (marker . ((size . 40)
@@ -484,7 +485,7 @@ Create a scatter Plot with a Color Dimension
 
 Set up colors, symbol and other parameters for a dotchart:
 
-    (simplotly
+    (eplotly
       '(
         ((x 1 2 3 4)
          (y . (10 11 12 13))
@@ -497,7 +498,7 @@ Set up colors, symbol and other parameters for a dotchart:
 
 Create a piechart:
 
-    (simplotly
+    (eplotly
         '(
           ((values . (30 20 50))
            (labels . ("Residential" "Non-Residential" "Utility"))
@@ -506,7 +507,7 @@ Create a piechart:
 
 Create a doughnut chart:
 
-    (simplotly
+    (eplotly
         '(
           ((values  16 15 12 6 5 4 42)
            (labels . ("US" "China" "European Union" "Russian Federation"
@@ -519,7 +520,7 @@ Create a doughnut chart:
 
 Create a heatmap:
 
-    (simplotly
+    (eplotly
           '((
              (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
              (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
@@ -529,7 +530,7 @@ Create a heatmap:
 
 Create histograms
 
-    (simplotly
+    (eplotly
      '(((y . (1 2 2 2 1 1 1 4 4 4))
         (type . "histogram"))))
 
@@ -537,7 +538,7 @@ For a stacked histogram, pass two or more series as a first argument,
 then, as a second argume (containing the layout settings) include
 an alist with values (barmode . "stack").
 
-    (simplotly
+    (eplotly
      '(((x . (1 2 2 2 1 1 1 4 4 4))
         (type . "histogram")
         )
@@ -547,14 +548,14 @@ an alist with values (barmode . "stack").
      '((barmode . "stack")))
 
 
-<a id="orgce5e892"></a>
+<a id="orgfc9203e"></a>
 
-## <a id="org01f3828"></a>
+## <a id="org92c46e6"></a>
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
     
-    (simplotly
+    (eplotly
      '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
         (type . "box"))
        ((y . (3 3 2  1 1 1 5 5 5 ))
@@ -564,7 +565,7 @@ For horizontal boxplots, use 'x instead of 'y in the data-series
 nested list.
 
     
-    (simplotly
+    (eplotly
      '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
         (type . "box"))
        ((x . (3 3 2  1 1 1 5 5 5 ))
@@ -582,7 +583,7 @@ Let's create a plot similar to the one in Plotly-javascript tutorial:
           (reverse res))
         )
     
-      (simplotly
+      (eplotly
        `(((y . ,(random-list 30 10))
           (type . "box"))
          ((y . ,(random-list 30 11))
@@ -599,7 +600,7 @@ To include the underlying dots, add:
     most appropriate values for your plot).
 
     
-    (simplotly
+    (eplotly
      '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
     
         (boxpoints . "all")
@@ -619,7 +620,7 @@ the group to which each y-value belongs to).
              "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
     
     
-    (simplotly
+    (eplotly
      `((
         (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
         (x . ,days)
@@ -641,11 +642,11 @@ the group to which each y-value belongs to).
      '((boxmode . "group")))
 
 
-<a id="org4bedcde"></a>
+<a id="orgf9654c9"></a>
 
 # Subplots
 
-You need to pass a second argument to the simplotly function (an
+You need to pass a second argument to the eplotly function (an
 alist containing the layout parameters) where you need to set
 the number of rows and columns, i.e. something like the
 following will create a 2\*2 grid of charts
@@ -653,9 +654,9 @@ following will create a 2\*2 grid of charts
 '(( grid .
     ((rows . 2)
      (columns . 2)
-     (pattern .  "independent")))))
+     (pattern .  "independent"))))
 
-    (simplotly
+    (eplotly
      '((
         (  x . [1 2 3])
         (  y . [4 5 6])
@@ -684,7 +685,7 @@ following will create a 2\*2 grid of charts
           (pattern .  "independent")))))
 
 
-<a id="orga86def8"></a>
+<a id="org63cf351"></a>
 
 # Surface plots
 
@@ -692,7 +693,7 @@ Pass an alist with car equal z and cdr a nested list of
 height values, and another one with car equal 'type
 and cdr equal "surface").
 
-    (simplotly
+    (eplotly
      '((
         (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
                  (8.89 8.94 8.85 8.94 8.96 8.92) 

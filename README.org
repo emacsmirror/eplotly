@@ -4,11 +4,12 @@ This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
 It is a simple (and limited in scope) wrapper around [[https://plotly.com/][Plotly]].
 
-The main workhorse is the ~simplolty~ function, which translates
+The main workhorse is the ~eplotly~ function, which translates
 a lisp list into a javascript element, then embed it into an HTML
-file and opens it in a browser.
+file and opens it in a browser: users already familiar with ~Plotly~
+might prefer to use this function.
 
-A few convenience functions such as ~dotchart~ and ~barchart~ are
+A few convenience functions such as ~eplotly-dot~ and ~eplotly-bar~ are
 provided in order to make the creation of such common graphs easier.
 
 
@@ -44,7 +45,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 ** Dotcharts
 
-   You can plot a dotchart via the ~dotchart~ function: it accepts one or
+   You can plot a dotchart via the ~eplotly-dot~ function: it accepts one or
    more arguments:
 
     - the first one is a list of one or more lists that contain the data
@@ -58,9 +59,9 @@ locally a copy of plotly.js, i.e. something like the following:
     the dots, the second one containing the y-values.
    #+begin_src elisp
 
-          (dotchart
-           '(((1 2 3 4)
-              (10 11 12 13))))
+     (eplotly-dot
+      '(((1 2 3 4)
+         (10 11 12 13))))
 
    #+end_src
 
@@ -68,7 +69,7 @@ locally a copy of plotly.js, i.e. something like the following:
    nested list with x and y values to the data-series.
    #+begin_src elisp
 
-     (dotchart
+     (eplotly-dot
       '(
         ((1 2 3 4)
          (10 11 12 13))
@@ -85,7 +86,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
    #+begin_src elisp
 
-          (dotchart
+          (eplotly-dot
            '(((1 2 3 4)
               (10 11 12 13)
              :mode "lines")))
@@ -97,7 +98,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
    #+begin_src elisp
 
-               (dotchart
+               (eplotly-dot
                 '(((1 2 3 4)
                    (10 11 12 13)
                   :mode "lines+markers"
@@ -124,7 +125,7 @@ locally a copy of plotly.js, i.e. something like the following:
   
    #+begin_src elisp
 
-     (dotchart
+     (eplotly-dot
       '(
         ;; first series of data to plot
         ((1 2 3) (3 3 3) :mode "markers"
@@ -143,14 +144,14 @@ locally a copy of plotly.js, i.e. something like the following:
 
   #+begin_src elisp
 
-    (dotchart
+    (eplotly-dot
      '(((1 2 3 4)
         (10 11 12 13)
         :size (10 20 30 30)
         :color ("rgb(93 164 214)" "rgb(255 144 14)"  "rgb(44 160 101)" "rgb(255 65 54)")
         :symbol  ("circle" "square" "diamond" "cross")))
 
-     :title "Using Dotchart elisp function")
+     :title "Using eplotly-dot elisp function")
   #+end_src
 
   
@@ -170,7 +171,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 
   #+begin_src elisp
-    (barchart '(
+    (eplotly-bar '(
                 ;; first series of bars
                 (
                  ;; series of labels for the bars
@@ -192,7 +193,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
   #+begin_src elisp
 
-    (barchart '((
+    (eplotly-bar '((
                  ("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
                  (8.0 8.0 12.0 12.0 13.0 20.0)
                  :text  ("4.17 below the mean" "4.17 below the mean" "0.17 below the mean" "0.17 below the mean" "0.83 above the mean" "7.83 above the mean"))
@@ -202,7 +203,7 @@ locally a copy of plotly.js, i.e. something like the following:
   The angle of the text at the tick marks can be rotated via the :tickangle parameter:
 
   #+begin_src elisp
-    (barchart  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
+    (eplotly-bar  '((("Liam" "Sophie" "Jacob" "Mia" "William" "Olivia")
               (8.0 8.0 12.0 12.0 13.0 20.0)
               :text  (8.0 8.0 12.0 12.0 13.0 20.0)))
            :tickangle -45)
@@ -218,7 +219,7 @@ locally a copy of plotly.js, i.e. something like the following:
   - labels for each slice of the piechart
 
 #+begin_src elisp
-  (pie
+  (eplotly-pie
       '(
         ((30 20 50)
          ("Residential" "Non-Residential" "Utility")
@@ -231,7 +232,7 @@ locally a copy of plotly.js, i.e. something like the following:
   'hole in the alist:
 
 #+begin_src elisp
-   (pie
+   (eplotly-pie
        '(
          ((16 15 12 6 5 4 42)
           ("US" "China" "European Union" "Russian Federation"
@@ -269,7 +270,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
     #+begin_src elisp
       
-  (heatmap
+  (eplotly-heatmap
           '((
              ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))))
 
@@ -284,7 +285,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 #+begin_src elisp
 
-  (heatmap
+  (eplotly-heatmap
    '((
       ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20))
       :x ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
@@ -294,10 +295,10 @@ locally a copy of plotly.js, i.e. something like the following:
 
 * Histograms
 
- To plot histograms you can use the function ~hist~
+ To plot histograms you can use the function ~eplotly-hist~
  
 #+begin_src elisp
-  (hist
+  (eplotly-hist
    '(((1 2 2 2 1 1 1 4 4 4)
       )))
 #+end_src
@@ -306,7 +307,7 @@ locally a copy of plotly.js, i.e. something like the following:
   bars, set the key :direction to "horizontal";
   
 #+begin_src elisp
-  (hist
+  (eplotly-hist
    '(((1 2 2 2 1 1 1 4 4 4)
       :direction "horizontal"
       )))
@@ -317,7 +318,7 @@ locally a copy of plotly.js, i.e. something like the following:
   then, then pass the :barmode key set to "stack".
   
 #+begin_src elisp
-  (hist
+  (eplotly-hist
    '(((1 2 2 2 1 1 1 4 4 4))
      ((3 3 2  1 1 1 5 5 5 )))
    :barmode "stack")
@@ -332,7 +333,7 @@ For vertical boxplots, pass lists of data for each bar
 
 #+begin_src elisp
 
-  (box
+  (eplotly-box
    '((
       (1 2 2 2 1 1 1 4 4 4 10 -5))
      ((3 3 2  1 1 1 5 5 5 ))))
@@ -343,7 +344,7 @@ You can specify the names of each box, by using the :name key
 
 #+begin_src elisp
 
-      (box
+      (eplotly-box
        '((
           (1 2 2 2 1 1 1 4 4 4 10 -5)
           :name "first")
@@ -357,7 +358,7 @@ For horizontal boxplots, set the :direction key to "horizontal"
 
 #+begin_src elisp
 
-            (box
+            (eplotly-box
              '((
                 (1 2 2 2 1 1 1 4 4 4 10 -5)
                 :name "first"
@@ -377,7 +378,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
 
 * More complex graphs
 
-  The functions ~barchart~ and ~dotchart~ are wrappers around the function ~simplotly~
+  The functions ~eplotly-bar~ and ~eplotly-dot~ are wrappers around the function ~eplotly~
   which can be used to create more complicated plots and allows for additional
   fine tunings of those plots.
 
@@ -386,13 +387,13 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   1. the first is a series of one or more alists; each alist follows the structure
      of the javascript code used by plotly.js; heare are some example of its usage
       (please refer to the potly javascript documentation to see all the avaiable
-      parameters - though it is not guaranteed that ~simplotly~ will accept
+      parameters - though it is not guaranteed that ~eplotly~ will accept
        all such parameters).
   2. a second (optional) alist of parameters determining the ~layout~ of the chart.
      
 
     #+begin_src elisp
-      (simplotly
+      (eplotly
         '(
           ((x 1 2 3 4 5)
            (y . (1 6 3 6 1))
@@ -430,19 +431,19 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   #+end_src
 
 
- Create a basic barchart with ~simplotly~:
+ Create a basic barchart with ~eplotly~:
 
  #+begin_src elisp
-   (simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+   (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
                    (type . "bar")))
            '((title . "Barchart")))
  #+end_src
 
-   Create a grouped barchart with ~simplotly~:
+   Create a grouped barchart with ~eplotly~:
 
    #+begin_src elisp
-     (simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+     (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
                    (name . "SF Zoo")
                    (type . "bar")
@@ -456,13 +457,13 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
            )
    #+end_src
 
-  Create a stacked barchart with ~simplotly~:
+  Create a stacked barchart with ~eplotly~:
 
   #+begin_src elisp
     
 
 ;; stacked
-(simplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
+(eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
                    (name . "SF Zoo")
                    (type . "bar")
@@ -486,7 +487,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
 
   #+begin_src elisp
 
-    (simplotly
+    (eplotly
      '(((y . (5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5))
         (mode . "markers")
         (marker . ((size . 40)
@@ -499,7 +500,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   Set up colors, symbol and other parameters for a dotchart:
 
   #+begin_src elisp
-    (simplotly
+    (eplotly
       '(
         ((x 1 2 3 4)
          (y . (10 11 12 13))
@@ -516,7 +517,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   Create a piechart:
 
   #+begin_src elisp
-  (simplotly
+  (eplotly
       '(
         ((values . (30 20 50))
          (labels . ("Residential" "Non-Residential" "Utility"))
@@ -527,7 +528,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   Create a doughnut chart:
 
   #+begin_src elisp
-  (simplotly
+  (eplotly
       '(
         ((values  16 15 12 6 5 4 42)
          (labels . ("US" "China" "European Union" "Russian Federation"
@@ -545,7 +546,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
  Create a heatmap:
      
   #+begin_src elisp
-    (simplotly
+    (eplotly
           '((
              (z . ((1 20 30 50 1) (20 1 60 80 30) (30 60 1 -10 20)))
              (x . ("Monday" "Tuesday" "Wednesday" "Thursday" "Friday"))
@@ -558,7 +559,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
 
     
 #+begin_src elisp
-  (simplotly
+  (eplotly
    '(((y . (1 2 2 2 1 1 1 4 4 4))
       (type . "histogram"))))
 #+end_src
@@ -568,7 +569,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
   an alist with values (barmode . "stack").
   
 #+begin_src elisp
-  (simplotly
+  (eplotly
    '(((x . (1 2 2 2 1 1 1 4 4 4))
       (type . "histogram")
       )
@@ -586,7 +587,7 @@ For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box"
 
 #+begin_src elisp
 
-  (simplotly
+  (eplotly
    '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
       (type . "box"))
      ((y . (3 3 2  1 1 1 5 5 5 ))
@@ -599,7 +600,7 @@ nested list.
 
 #+begin_src elisp
 
-  (simplotly
+  (eplotly
    '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
       (type . "box"))
      ((x . (3 3 2  1 1 1 5 5 5 ))
@@ -620,7 +621,7 @@ Let's create a plot similar to the one in Plotly-javascript tutorial:
         (reverse res))
       )
 
-    (simplotly
+    (eplotly
      `(((y . ,(random-list 30 10))
         (type . "box"))
        ((y . ,(random-list 30 11))
@@ -640,7 +641,7 @@ Let's create a plot similar to the one in Plotly-javascript tutorial:
 
 #+begin_src elisp
 
-  (simplotly
+  (eplotly
    '(((y . (1 2 2 2 1 1 1 4 4 4 10 -5))
 
       (boxpoints . "all")
@@ -664,7 +665,7 @@ the group to which each y-value belongs to).
            "day 2" "day 2" "day 2" "day 2" "day 2" "day 2"))
 
 
-  (simplotly
+  (eplotly
    `((
       (y . [0.2 0.2 0.6 1.0 0.5 0.4 0.2 0.7 0.9 0.1 0.5 0.3])
       (x . ,days)
@@ -693,7 +694,7 @@ the group to which each y-value belongs to).
 
 * Subplots
 
-  You need to pass a second argument to the simplotly function (an
+  You need to pass a second argument to the eplotly function (an
   alist containing the layout parameters) where you need to set
   the number of rows and columns, i.e. something like the
   following will create a 2*2 grid of charts
@@ -701,10 +702,10 @@ the group to which each y-value belongs to).
    '(( grid .
        ((rows . 2)
         (columns . 2)
-        (pattern .  "independent")))))
+        (pattern .  "independent"))))
 
 #+begin_src elisp
-  (simplotly
+  (eplotly
    '((
       (  x . [1 2 3])
       (  y . [4 5 6])
@@ -741,7 +742,7 @@ the group to which each y-value belongs to).
  and cdr equal "surface").
 
 #+begin_src elisp
-  (simplotly
+  (eplotly
    '((
       (z .    ((8.83 8.89 8.81 8.87 8.9 8.87) 
                (8.89 8.94 8.85 8.94 8.96 8.92) 
