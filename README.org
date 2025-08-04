@@ -13,7 +13,7 @@ The following utility functions can also be used in place of ~eplotly~
 to create common graphs (they assume some default parameters, thus
 simplify the instructions to build plots):
 
- - [[Dotcharts][~eplotly-dot~]] :: for dotcharts
+ - [[Dotcharts][eplotly-dot]] :: for dotcharts
  - [[Barcharts][~eplotly-bar~]] :: for barcharts
  - [[Piechart][~eplotly-pie~]] :: for pie charts
  - [[Histograms][~eplotly-hist~]] :: for histograms
@@ -52,7 +52,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 * Usage - simple plots
 
-** <<Dotcharts>>
+** Dotcharts <<Dotcharts>>
 
    You can plot a dotchart via the ~eplotly-dot~ function: it accepts one or
    more arguments:
@@ -164,7 +164,7 @@ locally a copy of plotly.js, i.e. something like the following:
   #+end_src
 
   
-** <<Barcharts>>
+** Barcharts <<Barcharts>>
 
   To create a barchart you need to pass lists of data for every series of bars.
   Each series should be composed of:
@@ -217,9 +217,9 @@ locally a copy of plotly.js, i.e. something like the following:
               :text  (8.0 8.0 12.0 12.0 13.0 20.0)))
            :tickangle -45)
   #+end_src
+  
 
-
-** <<Piechart>>
+** Piechart <<Piechart>>
 
   To create a simple pie chart, pass a data series whose elements
   are
@@ -254,7 +254,7 @@ locally a copy of plotly.js, i.e. something like the following:
 #+end_src
 
 
-** <<Heatmap>>
+** Heatmap <<Heatmap>>
 
   To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
   a nested list built according to the following criteria:
@@ -302,7 +302,7 @@ locally a copy of plotly.js, i.e. something like the following:
 #+end_src
 
 
-** <<Histograms>>
+** Histograms <<Histograms>>
 
  To plot histograms you can use the function ~eplotly-hist~
  
@@ -334,7 +334,7 @@ locally a copy of plotly.js, i.e. something like the following:
 #+end_src
 
 
-** <<Boxplots>>
+** Boxplots <<Boxplots>>
 
 
 For vertical boxplots, pass lists of data for each bar
