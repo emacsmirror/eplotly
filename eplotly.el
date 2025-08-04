@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2025
 
-;; Author:  <>
-;; Maintainer:  <>
-;; URL:
+;; Author:  GioBo
+;; Maintainer:  GioBo
+;; URL: https://codeberg.org/GioBo/eplotly
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: tools
@@ -35,7 +35,7 @@
 
 
 (require 'jack)
-(require 'simple-httpd)
+;;(require 'simple-httpd)
 (require 'sgml-mode)
 (require 'f)
 
@@ -44,12 +44,12 @@
 
 ;; (defvar plotly-file "./plotly.min.js")
 
-(defvar *plotly-minified-js* "https://cdn.plot.ly/plotly-3.0.1.min.js")
+(defvar eplotly-minified-js "https://cdn.plot.ly/plotly-3.0.1.min.js")
 
-(defvar *plotly-dir* nil)
+(defvar eplotly-dir nil)
 
 
-(defun preview-html-string(testo)
+(defun eplotly-preview-html-string(testo)
   "See TESTO in a web browser.
 
 Insert the generated html text into a
@@ -57,12 +57,12 @@ temporary buffer, format it and then open
 a web browser."
   (let*
       ((local-file (if
-                       *plotly-dir*
-                       ;; (f-join (f-dirname *plotly-dir*) "temp_plot_file.html")
-                     (f-join *plotly-dir* "temp_plot_file.html")
-                    (s-join "."
-                           (list (make-temp-file "")
-                                 "html"))))
+                       eplotly-dir
+                       ;; (f-join (f-dirname eplotly-dir) "temp_plot_file.html")
+                       (f-join eplotly-dir "temp_plot_file.html")
+                     (s-join "."
+                             (list (make-temp-file "")
+                                   "html"))))
        ;; (local-file *eplotly-local-outfile*)
        )
     (with-temp-file local-file
@@ -70,39 +70,38 @@ a web browser."
         (insert testo)
         (sgml-pretty-print (point-min)
                            (point-max))))
-    (browse-url-of-file  local-file))
-  )
+    (browse-url-of-file  local-file)))
 
 
-(defun list-to-vect(li)
+(defun eplotly-list-to-vect(li)
   "Convert the list LI to a vector."
   (cl-map  'vector #'identity li))
 
 
-(defun nested-list-to-vect(obj)
+(defun eplotly-nested-list-to-vect(obj)
   "Convert the nested list OBJ to a multidimensional array."
   (cond
    
-    ((cl-every #'atom obj)
-     (list-to-vect obj))
-    (t  (cl-map 'vector #'nested-list-to-vect obj))))
+   ((cl-every #'atom obj)
+    (eplotly-list-to-vect obj))
+   (t  (cl-map 'vector #'eplotly-nested-list-to-vect obj))))
 
 
-(defun rearrange-data-series(obj)
+(defun eplotly-rearrange-data-series(obj)
   "Convert the cdr of the alist OBJ to a vector if the car is equal to x, y or z.
 
 This is needed for the json-encoder to correctly create
 data series for some plots like heatmaps."
   (list
-   (mapcar (lambda(el)
-            (cond
-             ((or (equal 'x (car el))
-                  (equal 'y (car el))
-                  (equal 'z (car el)))
-              (cons (car el) (nested-list-to-vect (cdr el))))
-             (t el)))  obj)))
+   (mapcar #'(lambda(el)
+             (cond
+              ((or (equal 'x (car el))
+                   (equal 'y (car el))
+                   (equal 'z (car el)))
+               (cons (car el) (eplotly-nested-list-to-vect (cdr el))))
+              (t el)))  obj)))
 
-(defun simplotly-string(lisp-obj &optional layout)
+(defun eplotly-string(lisp-obj &optional layout)
   "Generate the HTML string containing thejavascript script.
 
 Arguments:
@@ -113,40 +112,31 @@ Arguments:
   (interactive)
   (let*
       ((plotly-tag "temp")
-       (plotly-file (if  *plotly-dir*
+       (plotly-file (if  eplotly-dir
                         "./plotly.min.js"
-                      *plotly-minified-js*
-                      ))
-       ;; (lisp-obj (mapcar #'rearrange-data-series lisp-obj))
-       (lisp-obj (mapcan #'rearrange-data-series lisp-obj))
+                      eplotly-minified-js))
+       ;; (lisp-obj (mapcar #'eplotly-rearrange-data-series lisp-obj))
+       (lisp-obj (mapcan #'eplotly-rearrange-data-series lisp-obj))
        (format-inst  (if layout
                          (format "Plotly.newPlot('%s', %s,%s);"
                                  plotly-tag
                                  (json-encode
                                   lisp-obj)
-                                 (json-encode layout)
-                                 )
+                                 (json-encode layout))
                        (format "Plotly.newPlot('%s', %s);"
                                plotly-tag
                                (json-encode
-                                lisp-obj)
-                               )))
-       )
+                                lisp-obj))))
     (jack-html
      `(:html
        (:head
-        (:script (@  :src ,plotly-file))
-        )
+        (:script (@  :src ,plotly-file)))
        (:body
         (:div (@ :id ,plotly-tag :height "80%")
-              (:script ,format-inst)
-              ))))
-    
-    )
-  )
+              (:script ,format-inst)))))))
 
 
-(defun simplotly(lisp-obj &optional layout)
+(defun eplotly(lisp-obj &optional layout)
   "Open a web browser showing the plots.
 
 - LISP-OBJ: a nested list that that contains data to be plotted.
@@ -164,34 +154,13 @@ Arguments:
            The content (and structure) of this object should
            follow the one used by Plotly."
   (interactive)
-  (preview-html-string
-   (simplotly-string lisp-obj layout))
-  )
+  (eplotly-preview-html-string
+   (eplotly-string lisp-obj layout)))
 
 
-;; (defmacro plotly(obj &optional layout)
-;;   "Macro to make is easier to call the httpd servlet
-;; "
-;;   `(defservlet plotly text/html ()
-;;      (insert  (simplotly-string ,obj ,layout))))
-
-
-
-(define-minor-mode eplotly-mode
-  "Utilities to create plots via Plotly."
-  :lighter " EPL"
-  :keymap (let ((map (make-sparse-keymap)))
-            ;; (define-key map (kbd "C-c C-a") 'hydra-sly-utils/body)
-	    ;; (define-key map (kbd "C-c C-z") 'revised-sly-mrepl)
-	    ;; (define-key map (kbd "C-c '") 'indirect-edit-comment)
-            map))
-
-
-;; (add-hook 'lisp-mode-hook 'sly-utils-mode)
 
 ;; some utilities to make plotting faster and easier
-
-(cl-defun simple-layout( &key
+(cl-defun eplotly-simple-layout( &key
                          (title "")
                          (xlim nil)
                          (ylim nil)
@@ -265,14 +234,13 @@ Arguments:
     template))
 
 
-(cl-defun dotchart-series(xseries yseries &key
+(cl-defun eplotly-dotchart-series(xseries yseries &key
                                   (mode "markers")
                                   (name "")
                                   (text nil)
                                   (size 12)
                                   (color nil)
-                                  (symbol nil)
-                                  )
+                                  (symbol nil))
   "Create data series for dotchart.
 
 Arguments:
@@ -294,13 +262,10 @@ Arguments:
     (text . ,text)
     (marker . ((size . ,size)
                (color . ,color)
-               (symbol . ,symbol)))
-    )
-  )
+               (symbol . ,symbol)))))
 
 
-(cl-defun dotchart(series &rest layout-args
-                          )
+(cl-defun eplotly-dot(series &rest layout-args)
   "Make creation of a dotchart a little easier.
 
 - SERIES: a nested list containing data series to be plot.
@@ -316,21 +281,19 @@ Example (remember to un-escape quotation marks before running):
             ((1 2 3) (5 2 1) :mode \"lines\"
              :text '(\"A\" \"B\" \"C\"))
             ((1 2 3) (5 5 8) :mode \"lines+markers\" :name \"Team C\" :size 20))))
-  (dotchart tt))"
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'dotchart-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
+  (eplotly-dot tt))"
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-dotchart-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
 
 ;; Barcharts
 
-(cl-defun barchart-series(xseries yseries
+(cl-defun eplotly-barchart-series(xseries yseries
                                   &key
                                   (mode "markers")
                                   (name "")
-                                  (text nil)
-                                  )
+                                  (text nil))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -345,13 +308,11 @@ Arguments:
     (mode . ,mode)
     (type . "bar")
     (name . ,name)
-    (text . ,text)
-    )
-  )
+    (text . ,text)))
 
 
-(cl-defun barchart(series &rest layout-args)
-  "Make creation of a dotchart a little easier.
+(cl-defun eplotly-bar(series &rest layout-args)
+  "Make creation of a barchart a little easier.
 
 Arguments:
 
@@ -359,19 +320,17 @@ Arguments:
 
 - LAYOUT-ARGS: an alist containing the layout parameters
                for the chart."
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'barchart-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-barchart-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
 ;; Piecharts
 
-(cl-defun pie-series(vals labels
-                             &key
-                             (name "")
-                             (text nil)
-                             (hole 0)
-                             )
+(cl-defun eplotly-pie-series(vals labels
+                          &key
+                          (name "")
+                          (text nil)
+                          (hole 0))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -387,12 +346,10 @@ Arguments:
     (type . "pie")
     (name . ,name)
     (text . ,text)
-    (hole . ,hole)
-    )
-  )
+    (hole . ,hole)))
 
 
-(cl-defun pie(series &rest layout-args)
+(cl-defun eplotly-pie(series &rest layout-args)
   "Make creation of a piechart a little easier.
 
 Arguments:
@@ -401,20 +358,18 @@ Arguments:
 
 - LAYOUT-ARGS: an alist containing the layout parameters
                for the chart."
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'pie-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-pie-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
 ;; Heatmap
 
-(cl-defun heatmap-series(vals
-                             &key
-                             (x nil)
-                             (y nil)
-                             (text nil)
-                             (name "")
-                             )
+(cl-defun eplotly-heatmap-series(vals
+                         &key
+                         (x nil)
+                         (y nil)
+                         (text nil)
+                         (name ""))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -433,13 +388,11 @@ Arguments:
     ;; (mode . ,mode)
     (type . "heatmap")
     (name . ,name)
-    (text . ,text)
-    )
-  )
+    (text . ,text)))
 
 
-(cl-defun heatmap(series &rest layout-args)
-  "Make creation of a heatmapchart a little easier.
+(cl-defun eplotly-heatmap(series &rest layout-args)
+  "Make creation of a heatmap chart a little easier.
 
 Arguments:
 
@@ -447,20 +400,18 @@ Arguments:
 
 - LAYOUT-ARGS: an alist containing the layout parameters
                for the chart."
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'heatmap-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-heatmap-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
 
 ;; Histograms
 
-(cl-defun hist-series(vals
+(cl-defun eplotly-hist-series(vals
                       &key
                       (direction "vertical")
                       (text nil)
-                      (name "")
-                      )
+                      (name ""))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -476,21 +427,18 @@ Arguments:
     `((x . ,vals)
       (type . "histogram")
       (name . ,name)
-      (text . ,text)
-      ))
+      (text . ,text)))
    ((equal direction "horizontal")
     `((y . ,vals)
       (type . "histogram")
       (name . ,name)
-      (text . ,text)
-      ))
+      (text . ,text)))
    (t
-    (error "Direction should either be horizontal or vertical")))
-  )
+    (error "Direction should either be horizontal or vertical"))))
 
 
-(cl-defun hist(series &rest layout-args)
-  "Make creation of a histchart a little easier.
+(cl-defun eplotly-hist(series &rest layout-args)
+  "Make creation of a histogram a little easier.
 
 Arguments:
 
@@ -498,20 +446,18 @@ Arguments:
 
 - LAYOUT-ARGS: an alist containing the layout parameters
                for the chart."
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'hist-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-hist-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
 
 ;; Boxplots
 
-(cl-defun box-series(vals
-                      &key
-                      (direction "vertical")
-                      (text nil)
-                      (name nil)
-                      )
+(cl-defun eplotly-box-series(vals
+                     &key
+                     (direction "vertical")
+                     (text nil)
+                     (name nil))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -532,14 +478,12 @@ Arguments:
     `((x . ,vals)
       (type . "box")
       (name . ,name)
-      (text . ,text)
-      ))
+      (text . ,text)))
    (t
-    (error "Direction should either be horizontal or vertical")))
-  )
+    (error "Direction should either be horizontal or vertical"))))
 
 
-(cl-defun box(series &rest layout-args)
+(cl-defun eplotly-box(series &rest layout-args)
   "Make creation of a boxchart a little easier.
 
 Arguments:
@@ -548,13 +492,21 @@ Arguments:
 
 - LAYOUT-ARGS: an alist containing the layout parameters
                for the chart."
-  (simplotly (mapcar #'(lambda(x)
-                         (apply #'box-series x)) series)
-             (apply #'simple-layout layout-args))
-  )
-   
+  (eplotly (mapcar #'(lambda(x)
+                         (apply #'eplotly-box-series x)) series)
+             (apply #'eplotly-simple-layout layout-args)))
 
-    
+
+
+(define-minor-mode eplotly-mode
+  "Utilities to create plots via Plotly."
+  :lighter " EPL"
+  :keymap (let ((map (make-sparse-keymap)))
+            ;; (define-key map (kbd "C-c C-a") 'hydra-sly-utils/body)
+	    ;; (define-key map (kbd "C-c C-z") 'revised-sly-mrepl)
+	    ;; (define-key map (kbd "C-c '") 'indirect-edit-comment)
+            map))
+
 
 (provide 'eplotly)
 ;;; eplotly.el ends here

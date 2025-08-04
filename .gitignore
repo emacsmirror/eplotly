@@ -4,3 +4,4 @@ README_EASK.md
 dist/*
 .eask/*
 *~
+/makem.sh
