@@ -209,7 +209,6 @@ Arguments:
  - YLIM: limit for the y axis
  - XLAB: label for the x axis
  - YLAB: label for th ey axis
- - LEGEND: lagend content
  - AUTOSIZE: autosize of the chart
  - WIDTH: chart width
  - HEIGHT: chart height
