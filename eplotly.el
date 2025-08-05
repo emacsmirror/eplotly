@@ -66,6 +66,7 @@
 ;;(require 'simple-httpd)
 (require 'sgml-mode)
 (require 'f)
+(require 'json)
 
 
 (defvar eplotly-minified-js "https://cdn.plot.ly/plotly-3.0.1.min.js")
@@ -114,7 +115,7 @@ a web browser."
   "Manipulate data series of OBJ to create chart.
 
 Convert the cdr of the alist OBJ to a vector if the car
- is equal to x, y or z (i.e. this is needed since the
+is equal to x, y or z (i.e. this is needed since the
 json encoder will not convert nested lists to
 multidimensional arrays)."
 
@@ -193,7 +194,7 @@ Arguments:
 				 (ylim nil)
 				 (xlab nil)
 				 (ylab nil)
-				 (legend nil)
+				 ;; (legend nil)
 				 (autosize  "false")
 				 (width 800)
 				 (height 500)
@@ -208,7 +209,6 @@ Arguments:
  - YLIM: limit for the y axis
  - XLAB: label for the x axis
  - YLAB: label for th ey axis
- - LEGEND: lagend content
  - AUTOSIZE: autosize of the chart
  - WIDTH: chart width
  - HEIGHT: chart height
@@ -307,9 +307,9 @@ Example (remember to un-escape quotation marks before running):
 
 
 \(let
-  ((tt	'(((1 2 3) (3 3 3) :mode \"markers\") ; \"Team A\")
+  ((tt	\\='(((1 2 3) (3 3 3) :mode \"markers\") ; \"Team A\")
 	    ((1 2 3) (5 2 1) :mode \"lines\"
-	     :text '(\"A\" \"B\" \"C\"))
+	     :text \\='(\"A\" \"B\" \"C\"))
 	    ((1 2 3) (5 5 8) :mode \"lines+markers\"
 	     :name \"Team C\" :size 20))))
   (eplotly-dot tt))"
