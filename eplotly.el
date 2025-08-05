@@ -115,7 +115,7 @@ a web browser."
   "Manipulate data series of OBJ to create chart.
 
 Convert the cdr of the alist OBJ to a vector if the car
- is equal to x, y or z (i.e. this is needed since the
+is equal to x, y or z (i.e. this is needed since the
 json encoder will not convert nested lists to
 multidimensional arrays)."
 
