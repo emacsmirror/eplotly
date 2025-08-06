@@ -1,18 +1,19 @@
 
 # Table of Contents
 
-1.  [Installation](#org8f27031)
-2.  [Usage - simple plots](#org99f845d)
-    1.  [Dotcharts ](#org7713880)
-    2.  [Barcharts ](#orga360e8f)
-    3.  [Piechart ](#orgdc84441)
-    4.  [Heatmap ](#org45fc9a1)
-    5.  [Histograms ](#org713850b)
-    6.  [Boxplots ](#org2589dbd)
-3.  [More complex graphs via `eplotly`](#orge322cde)
-    1.  [Create boxplots ](#org0c974f7)
-4.  [Subplots](#orgd861f42)
-5.  [Surface plots](#org628abf3)
+1.  [Installation](#orgefdb0ac)
+2.  [Usage - simple plots](#orgf635da0)
+    1.  [Dotcharts ](#orgec00b41)
+    2.  [Barcharts ](#org5ef70af)
+    3.  [Piechart ](#org11818e3)
+    4.  [Heatmap ](#org64c460f)
+    5.  [Histograms ](#org5c74eaf)
+    6.  [Boxplots ](#org4da73fd)
+    7.  [Curves ](#orgfaf1c31)
+3.  [More complex graphs via `eplotly`](#org28a85bc)
+    1.  [Create boxplots ](#orgc091743)
+4.  [Subplots](#orgca4cbdb)
+5.  [Surface plots](#orgdc87508)
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
@@ -27,15 +28,16 @@ The following utility functions can also be used in place of `eplotly`
 to create common graphs (they assume some default parameters, thus
 simplify the instructions to build plots):
 
--   **[`eplotly-dot`](#org3b5e1e1):** for dotcharts
--   **[`eplotly-bar`](#org7884c16):** for barcharts
--   **[`eplotly-pie`](#org798c9ce):** for pie charts
--   **[`eplotly-hist`](#orgcfedb2a):** for histograms
--   **[`eplotly-heatmap`](#orgf7fa8db):** for heatmaps
--   **[`eplotly-box`](#org87b04ed):** for boxplots
+-   **[`eplotly-dot`](#org1d8f6b4):** for dotcharts
+-   **[`eplotly-bar`](#org090d330):** for barcharts
+-   **[`eplotly-pie`](#org3c872bd):** for pie charts
+-   **[`eplotly-hist`](#org636ca95):** for histograms
+-   **[`eplotly-heatmap`](#org1f11255):** for heatmaps
+-   **[`eplotly-box`](#org3d1c9db):** for boxplots
+-   **[`eplotly-fun`](#org8c38f6e):** for plotting curves
 
 
-<a id="org8f27031"></a>
+<a id="orgefdb0ac"></a>
 
 # Installation
 
@@ -61,14 +63,14 @@ locally a copy of plotly.js, i.e. something like the following:
         (setq eplotly-dir "/path/to/plotlyjs/")
 
 
-<a id="org99f845d"></a>
+<a id="orgf635da0"></a>
 
 # Usage - simple plots
 
 
-<a id="org7713880"></a>
+<a id="orgec00b41"></a>
 
-## Dotcharts <a id="org3b5e1e1"></a>
+## Dotcharts <a id="org1d8f6b4"></a>
 
 You can plot a dotchart via the `eplotly-dot` function: it accepts one or
 more arguments:
@@ -163,9 +165,9 @@ via the :color and :symbol keys.
      :title "Using eplotly-dot elisp function")
 
 
-<a id="orga360e8f"></a>
+<a id="org5ef70af"></a>
 
-## Barcharts <a id="org7884c16"></a>
+## Barcharts <a id="org090d330"></a>
 
 To create a barchart you need to pass lists of data for every series of bars.
 Each series should be composed of:
@@ -212,9 +214,9 @@ The angle of the text at the tick marks can be rotated via the :tickangle parame
            :tickangle -45)
 
 
-<a id="orgdc84441"></a>
+<a id="org11818e3"></a>
 
-## Piechart <a id="org798c9ce"></a>
+## Piechart <a id="org3c872bd"></a>
 
 To create a simple pie chart, pass a data series whose elements
 are
@@ -242,9 +244,9 @@ To create a doughnut chart, simply include the additiona parameter
            ))
 
 
-<a id="org45fc9a1"></a>
+<a id="org64c460f"></a>
 
-## Heatmap <a id="orgf7fa8db"></a>
+## Heatmap <a id="org1f11255"></a>
 
 To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
 a nested list built according to the following criteria:
@@ -319,9 +321,9 @@ length of the :y list should be equal to the number of rows):
         :y ("Morning" "Afternoon" "Evening"))))
 
 
-<a id="org713850b"></a>
+<a id="org5c74eaf"></a>
 
-## Histograms <a id="orgcfedb2a"></a>
+## Histograms <a id="org636ca95"></a>
 
 To plot histograms you can use the function `eplotly-hist`
 
@@ -346,9 +348,9 @@ then, then pass the :barmode key set to "stack".
      :barmode "stack")
 
 
-<a id="org2589dbd"></a>
+<a id="org4da73fd"></a>
 
-## Boxplots <a id="org87b04ed"></a>
+## Boxplots <a id="org3d1c9db"></a>
 
 For vertical boxplots, pass lists of data for each box
 
@@ -382,10 +384,125 @@ For horizontal boxplots, set the :direction key to "horizontal"
      )
 
 **Grouped boxplots**: for grouped boxplots it is more convenient to
-use the **simplot** function (see [3.1](#org0a846c4) paragraph)
+use the **simplot** function (see [3.1](#org080c214) paragraph)
 
 
-<a id="orge322cde"></a>
+<a id="orgfaf1c31"></a>
+
+## Curves <a id="org8c38f6e"></a>
+
+You can plot curves using the `eplotly-fun` and passing one or more function
+definitions.
+
+For each curve the following parameters should be provided:
+
+-   a function to plot; this can be the name of a function already
+    available or a lambda function (NOTA BENE: if you pass a lambda,
+    that should not quoted nor be preceeded by #' (i.e.
+           (lambda(x)(+ x 2) : is good
+         #'(lambda(x)(+ x 2) : is bad
+          '(lambda(x)(+ x 2) : is bad
+-   minimum value for the x-value of the function
+-   maximum value for the x-value of the function
+-   :step (optional) : distance between one dot and the next (the smaller this
+    value, the smoother the curve will appear). By default
+    this is set to 1/20 of the range between xmin and xmax.
+-   :color (optional): color of the curve
+-   :dash : can either be 'solid', 'dash', 'dot' or 'dashdot'
+-   :width: width of the line
+-   :name : name of the curve
+-   :mode: default to 'lines' in order to plot a line
+
+E.g. let's play a parabola with equation $y = 3 x^2 + 5 * x$ from -10 to 10:
+
+    
+    (eplotly-fun
+     '(
+       ((lambda(x)  (+ (* 3 x x) (* 5 x))) -10 10)))
+
+..let's add a line ($y = 10 * x + 3$) in green color and dotted line:
+
+    (eplotly-fun
+     '(
+       ((lambda(x)  (+ (* 3 x x) (* 5 x))) -10 10 :name "Parabola")
+       ((lambda(x)  (+ (* 10 x) 3)) -10 10 :color "green"
+        :dash "dot" :name "Line")
+        )
+       )
+
+Let's try a more complex example: we want to plot the parabola
+$y = 3 * x^2 + 5 * x$ and its tangent lines at points with x=-5
+and x=3.
+
+Let's define the following functions:
+
+    
+    (defun parabola(x)
+      "Our parabola"
+      (+ (* 3 x x) (* 5 x)))
+    
+    (defun parabola-deriv(x)
+      "The derivative of our parabola."
+      (+ (* 6 x) 5))
+    
+    (defun tangent-at(fun fun-deriv val)
+      "Return the tangent line of FUN at VAL point.
+    "
+      (let*
+          (
+           ;; Px is the x-value at which we want to find
+           ;; the tangent line
+           (Px val)
+           ;; Py is the value of function at Px
+           (Py (funcall fun Px))
+           ;; m is the slope of the tangent
+           ;; curve at Px
+           (m (funcall fun-deriv val))
+           ;; b is the intercept of the
+           ;; tangent curve at Px
+           (b (- Py (* m Px)))
+           )
+        `(lambda(z)(+ (* ,m z) ,b))))
+
+We can now plot the parabola and the 2 tangent curves:
+
+    (let*
+        ((xmin -10)
+         (xmax 10))
+    
+      (eplotly-fun `(
+                     ;; plot the parabola
+                     (parabola ,xmin ,xmax :color "red" :name "parabola" :dash "solid")
+                     ;; plot the tangen at x=3
+                     (,(tangent-at #'parabola #'parabola-deriv 3) ,xmin ,xmax
+                      :color "green" :name "Tangent at 3" :dash "dash")
+                     ;; plot the tangent at -5
+                     (,(tangent-at #'parabola #'parabola-deriv -5) ,xmin ,xmax
+                      :color "blue" :name "Tangent at -5" :dash "dash")
+                     ;; let's plot the tangent points
+                     (parabola 3 3 :mode "markers" :name "Tangent point at 3" :color "green")
+                     (parabola -5 -5 :mode "markers" :name "Tangent point at -5"
+                               :color "blue")
+                     )
+    
+                   :title "Parabola and some tangents")
+      )
+
+Please note the following:
+
+-   the nested list passed to eplotly-fun is *backquoted* so that the
+    calls to `tangent-at` can be evaluated via the "," which is
+    prepended to them
+-   We used a little trick to plot the dots:
+    -   the parabola function was passes (so that it automatically
+        gets the right y value)
+    -   the range of the parabola is limited to the point we want
+        to plot (i.e. "from 3 to 3" or "from -5 to -5)
+    -   we pass the argument :mode "markers" so that dots are
+        plotted instead of lines.
+
+
+<a id="org28a85bc"></a>
 
 # More complex graphs via `eplotly`
 
@@ -556,9 +673,9 @@ an alist with values (barmode . "stack").
      '((barmode . "stack")))
 
 
-<a id="org0c974f7"></a>
+<a id="orgc091743"></a>
 
-## Create boxplots <a id="org0a846c4"></a>
+## Create boxplots <a id="org080c214"></a>
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
@@ -650,7 +767,7 @@ the group to which each y-value belongs to).
      '((boxmode . "group")))
 
 
-<a id="orgd861f42"></a>
+<a id="orgca4cbdb"></a>
 
 # Subplots
 
@@ -693,7 +810,7 @@ following will create a 2\*2 grid of charts
           (pattern .  "independent")))))
 
 
-<a id="org628abf3"></a>
+<a id="orgdc87508"></a>
 
 # Surface plots
 
