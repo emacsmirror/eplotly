@@ -153,8 +153,7 @@ Arguments:
 		       (format "Plotly.newPlot('%s', %s);"
 			       plotly-tag
 			       (json-encode
-				lisp-obj))))
-       )
+				lisp-obj)))))
        (jack-html
 	`(:html
 	  (:head
@@ -528,6 +527,64 @@ Arguments:
 	   (apply #'eplotly-simple-layout layout-args)))
 
 
+;; Curves
+
+(cl-defun eplotly-fun-series(fun xmin xmax
+				      &key
+				      (step nil)
+				      (mode "lines")
+				      (name "")
+				      (text nil)
+				      (color "red")
+				      (dash "solid")
+				      (width 1))
+  "Create an alist for the plotly chart.
+
+Arguments:
+
+- FUN: function to plot; this can be the name of a function already
+       available or a lambda function (NOTA BENE: if you pass a lambda,
+       that should not quoted nor be preceeded by #' (i.e.
+         (lambda(x)(+ x 2)) : is good
+       #'(lambda(x)(+ x 2)) : is bad
+        '(lambda(x)(+ x 2)) : is bad
+- XMIN: minimum value for the x-value of the function
+- XMAX: maximum value for the x-value of the function
+- STEP: distance between one dot and the next (the smaller this
+        value, the smoother the curve will appear).  By default
+        this is set to 1/20 of the range between xmin and xmax
+- COLOR: color of the curve
+- DASH: can either be 'solid', 'dash', 'dot' or 'dashdot'
+- WIDTH: width of the line
+- NAME: name of the curve
+- MODE: default to 'lines' in order to plot a line"
+  (let*
+      (
+       (step (or step (/ (- xmax xmin) 100.0)))
+       (x (number-sequence xmin xmax step))
+       (y (mapcar fun x)))
+    `((x . ,x)
+      (y . ,y)
+      (mode . ,mode)
+      (name . ,name)
+      (text . ,text)
+      (line . ((dash . ,dash)
+	       (color . ,color)
+	       (width . ,width))))))
+
+
+(cl-defun eplotly-fun(series &rest layout-args)
+  "Make creation of a barchart a little easier.
+
+Arguments:
+
+- SERIES: a nested list containing data series to be plot.
+
+- LAYOUT-ARGS: an alist containing the layout parameters
+	       for the chart."
+  (eplotly (mapcar #'(lambda(x)
+		       (apply #'eplotly-fun-series x)) series)
+	   (apply #'eplotly-simple-layout layout-args)))
 
 (define-minor-mode eplotly-mode
   "Utilities to create plots via Plotly."
