@@ -215,22 +215,23 @@ Arguments:
  - TICKANGLE: angle for the tickmarks"
 
   (let*
-      ((template `((xaxis
-		    (range nil nil)
-		    (title
-		     (text . ""))
-		    (tickangle . nil))
-		   (yaxis
-		    (range nil nil)
-		    (title
-		     (text . "")))
-		   (title
-		    (text . ""))
-		   (width . ,width)
-		   (height . ,height)
-		   (autosize . ,autosize)
-		   (barmode . ,barmode))))
-
+      (
+       (template (list
+		  (list 'xaxis
+			(list 'range nil nil)
+			(cons 'title
+			      (list (cons 'text "")))
+			(cons 'tickangle nil))
+		  (list 'yaxis
+			(list 'range nil nil)
+			(cons 'title
+			      (list (cons 'text ""))))
+		  (list 'title
+			(cons 'text ""))
+		  (cons 'width  width)
+		  (cons 'height  height)
+		  (cons 'autosize  autosize)
+		  (cons 'barmode  barmode))))
     (when title
       (setf (alist-get 'text (alist-get 'title template))
 	    title))

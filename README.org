@@ -96,7 +96,6 @@ locally a copy of plotly.js, i.e. something like the following:
 
 
    #+begin_src elisp
-
           (eplotly-dot
            '(((1 2 3 4)
               (10 11 12 13)
@@ -494,7 +493,7 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
                                  :color "blue")
                        )
                      :title "Parabola and some tangents"
-      :ylim '(-10 80)
+;;      :ylim '(-10 80)
         ))
     #+end_src
 
