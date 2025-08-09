@@ -1,19 +1,19 @@
 
 # Table of Contents
 
-1.  [Installation](#orgefdb0ac)
-2.  [Usage - simple plots](#orgf635da0)
-    1.  [Dotcharts ](#orgec00b41)
-    2.  [Barcharts ](#org5ef70af)
-    3.  [Piechart ](#org11818e3)
-    4.  [Heatmap ](#org64c460f)
-    5.  [Histograms ](#org5c74eaf)
-    6.  [Boxplots ](#org4da73fd)
-    7.  [Curves ](#orgfaf1c31)
-3.  [More complex graphs via `eplotly`](#org28a85bc)
-    1.  [Create boxplots ](#orgc091743)
-4.  [Subplots](#orgca4cbdb)
-5.  [Surface plots](#orgdc87508)
+1.  [Installation](#org8b8ad26)
+2.  [Usage - simple plots](#org5a9caf5)
+    1.  [Dotcharts ](#org594e7ce)
+    2.  [Barcharts ](#org2ad51a4)
+    3.  [Piechart ](#org154e25c)
+    4.  [Heatmap ](#org3b6d784)
+    5.  [Histograms ](#org901b42f)
+    6.  [Boxplots ](#org472685e)
+    7.  [Curves ](#org391c054)
+3.  [More complex graphs via `eplotly`](#org02559b1)
+    1.  [Create boxplots ](#orgdc4bfe5)
+4.  [Subplots](#orgdbf3096)
+5.  [Surface plots](#orgb476032)
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
@@ -28,16 +28,16 @@ The following utility functions can also be used in place of `eplotly`
 to create common graphs (they assume some default parameters, thus
 simplify the instructions to build plots):
 
--   **[`eplotly-dot`](#org1d8f6b4):** for dotcharts
--   **[`eplotly-bar`](#org090d330):** for barcharts
--   **[`eplotly-pie`](#org3c872bd):** for pie charts
--   **[`eplotly-hist`](#org636ca95):** for histograms
--   **[`eplotly-heatmap`](#org1f11255):** for heatmaps
--   **[`eplotly-box`](#org3d1c9db):** for boxplots
--   **[`eplotly-fun`](#org8c38f6e):** for plotting curves
+-   **[`eplotly-dot`](#org102bbf9):** for dotcharts
+-   **[`eplotly-bar`](#orgc61b46b):** for barcharts
+-   **[`eplotly-pie`](#orgc18af89):** for pie charts
+-   **[`eplotly-hist`](#org93f3248):** for histograms
+-   **[`eplotly-heatmap`](#orgc7e8b15):** for heatmaps
+-   **[`eplotly-box`](#orgba15b1e):** for boxplots
+-   **[`eplotly-fun`](#org85e4493):** for plotting curves
 
 
-<a id="orgefdb0ac"></a>
+<a id="org8b8ad26"></a>
 
 # Installation
 
@@ -63,14 +63,14 @@ locally a copy of plotly.js, i.e. something like the following:
         (setq eplotly-dir "/path/to/plotlyjs/")
 
 
-<a id="orgf635da0"></a>
+<a id="org5a9caf5"></a>
 
 # Usage - simple plots
 
 
-<a id="orgec00b41"></a>
+<a id="org594e7ce"></a>
 
-## Dotcharts <a id="org1d8f6b4"></a>
+## Dotcharts <a id="org102bbf9"></a>
 
 You can plot a dotchart via the `eplotly-dot` function: it accepts one or
 more arguments:
@@ -165,9 +165,9 @@ via the :color and :symbol keys.
      :title "Using eplotly-dot elisp function")
 
 
-<a id="org5ef70af"></a>
+<a id="org2ad51a4"></a>
 
-## Barcharts <a id="org090d330"></a>
+## Barcharts <a id="orgc61b46b"></a>
 
 To create a barchart you need to pass lists of data for every series of bars.
 Each series should be composed of:
@@ -214,9 +214,9 @@ The angle of the text at the tick marks can be rotated via the :tickangle parame
            :tickangle -45)
 
 
-<a id="org11818e3"></a>
+<a id="org154e25c"></a>
 
-## Piechart <a id="org3c872bd"></a>
+## Piechart <a id="orgc18af89"></a>
 
 To create a simple pie chart, pass a data series whose elements
 are
@@ -244,9 +244,9 @@ To create a doughnut chart, simply include the additiona parameter
            ))
 
 
-<a id="org64c460f"></a>
+<a id="org3b6d784"></a>
 
-## Heatmap <a id="org1f11255"></a>
+## Heatmap <a id="orgc7e8b15"></a>
 
 To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
 a nested list built according to the following criteria:
@@ -321,9 +321,9 @@ length of the :y list should be equal to the number of rows):
         :y ("Morning" "Afternoon" "Evening"))))
 
 
-<a id="org5c74eaf"></a>
+<a id="org901b42f"></a>
 
-## Histograms <a id="org636ca95"></a>
+## Histograms <a id="org93f3248"></a>
 
 To plot histograms you can use the function `eplotly-hist`
 
@@ -348,9 +348,9 @@ then, then pass the :barmode key set to "stack".
      :barmode "stack")
 
 
-<a id="org4da73fd"></a>
+<a id="org472685e"></a>
 
-## Boxplots <a id="org3d1c9db"></a>
+## Boxplots <a id="orgba15b1e"></a>
 
 For vertical boxplots, pass lists of data for each box
 
@@ -384,12 +384,12 @@ For horizontal boxplots, set the :direction key to "horizontal"
      )
 
 **Grouped boxplots**: for grouped boxplots it is more convenient to
-use the **simplot** function (see [3.1](#org080c214) paragraph)
+use the **simplot** function (see [3.1](#org29fdbac) paragraph)
 
 
-<a id="orgfaf1c31"></a>
+<a id="org391c054"></a>
 
-## Curves <a id="org8c38f6e"></a>
+## Curves <a id="org85e4493"></a>
 
 You can plot curves using the `eplotly-fun` and passing one or more function
 definitions.
@@ -502,7 +502,7 @@ Please note the following:
         plotted instead of lines.
 
 
-<a id="org28a85bc"></a>
+<a id="org02559b1"></a>
 
 # More complex graphs via `eplotly`
 
@@ -673,9 +673,9 @@ an alist with values (barmode . "stack").
      '((barmode . "stack")))
 
 
-<a id="orgc091743"></a>
+<a id="orgdc4bfe5"></a>
 
-## Create boxplots <a id="org080c214"></a>
+## Create boxplots <a id="org29fdbac"></a>
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
@@ -767,7 +767,7 @@ the group to which each y-value belongs to).
      '((boxmode . "group")))
 
 
-<a id="orgca4cbdb"></a>
+<a id="orgdbf3096"></a>
 
 # Subplots
 
@@ -810,7 +810,7 @@ following will create a 2\*2 grid of charts
           (pattern .  "independent")))))
 
 
-<a id="orgdc87508"></a>
+<a id="orgb476032"></a>
 
 # Surface plots
 
