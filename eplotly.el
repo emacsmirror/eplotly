@@ -547,18 +547,18 @@ Arguments:
        available or a lambda function (NOTA BENE: if you pass a lambda,
        that should not quoted nor be preceeded by #' (i.e.
 	 (lambda(x)(+ x 2)) : is good
-       #'(lambda(x)(+ x 2)) : is bad
-	'(lambda(x)(+ x 2)) : is bad
+       #\\='(lambda(x)(+ x 2)) : is bad
+	\\='(lambda(x)(+ x 2)) : is bad
 - XMIN: minimum value for the x-value of the function
 - XMAX: maximum value for the x-value of the function
 - STEP: distance between one dot and the next (the smaller this
 	value, the smoother the curve will appear).  By default
 	this is set to 1/20 of the range between xmin and xmax
 - COLOR: color of the curve
-- DASH: can either be 'solid', 'dash', 'dot' or 'dashdot'
+- DASH: can either be \"solid\", \"dash\", \"dot\" or \"dashdot\"
 - WIDTH: width of the line
 - NAME: name of the curve
-- MODE: default to 'lines' in order to plot a line"
+- MODE: default to \"lines\" in order to plot a line"
   (let*
       (
        (step (or step (/ (- xmax xmin) 100.0)))
@@ -592,7 +592,6 @@ Arguments:
 
 (cl-defun eplotly-densitymap-series(&key lon lat z
 					 (mode "densitymap")
-					 (name "")
 					 (text nil)
 					 (radius 50)
 					 (yanchor "top")
@@ -605,17 +604,18 @@ Arguments:
 - LAT: list or vector of latitude values
 - Z: list or vector of values for each lat/lon point
 - NAME: name of the curve
-- MODE: default to 'densitymap' in order to plot a line
+- MODE: default to \"densitymap\" in order to plot a line
 - TEXT: text associated to the series
 - RADIUS: radius for the densitymap plot
 - YANCHOR: where should the legendbar be shown
 - LEN: length of the legendbar"
   
   `((
-     (type . "densitymap")
+     (type . ,mode)
      (lon . ,lon)
      (lat . ,lat)
      (z . ,z)
+     (text . ,text)
      (radius . ,radius)
      (coloraxis . "coloraxis")
      (colorbar .
@@ -713,19 +713,16 @@ Example:
 				(type "rect" )
 				(xref "x" )
 				(yref "y" )
-				(x0 0); "2015-02-04" )
-				(y0 0 )
-				(x1 3);"2015-02-06" )
-				(y1 1 )
+				(x0 nil); "2015-02-04" )
+				(y0 nil)
+				(x1 nil);"2015-02-06" )
+				(y1 nil)
 				(fillcolor "#d3d3d3" )
 				(textposition "top center")
 				(fontsize 10)
 				(opacity 0.2 )
 				(name "")
-				(text nil)
-				(size 12)
-				(color nil)
-				(symbol nil))
+				(text nil))
   "Create data series for dotchart.
 
 Arguments:
@@ -760,6 +757,7 @@ Arguments:
      (y0 . ,y0)
      (x1 . ,x1)
      (y1 . ,y1)
+     (name . ,name)
      (label . ((text . ,text)
 	       (textposition . ,textposition)
 	       (font . ((size . ,fontsize)
@@ -783,7 +781,7 @@ Arguments:
 Arguments:
 
 - SERIES: shape series of data.
-- AXIS: either 'x or 'y."
+- AXIS: either \\='x or \\='y."
   (let*
       (
        ;; (axis 'x)
