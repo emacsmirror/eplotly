@@ -74,7 +74,7 @@
 (defvar eplotly-dir nil)
 
 
-(defun eplotly-preview-html-string(testo)
+(defun eplotly-preview-html-string (testo)
   "See TESTO in a web browser.
 
 Insert the generated html text into a
@@ -98,12 +98,12 @@ a web browser."
     (browse-url-of-file	 local-file)))
 
 
-(defun eplotly-list-to-vect(li)
+(defun eplotly-list-to-vect (li)
   "Convert the list LI to a vector."
   (cl-map  'vector #'identity li))
 
 
-(defun eplotly-nested-list-to-vect(obj)
+(defun eplotly-nested-list-to-vect (obj)
   "Convert the nested list OBJ to a multidimensional array."
   (cond
    ((cl-every #'atom obj)
@@ -111,7 +111,7 @@ a web browser."
    (t  (cl-map 'vector #'eplotly-nested-list-to-vect obj))))
 
 
-(defun eplotly-rearrange-data-series(obj)
+(defun eplotly-rearrange-data-series (obj)
   "Manipulate data series of OBJ to create chart.
 
 Convert the cdr of the alist OBJ to a vector if the car
@@ -128,7 +128,7 @@ multidimensional arrays)."
 		 (cons (car el) (eplotly-nested-list-to-vect (cdr el))))
 		(t el)))	obj)))
 
-(defun eplotly-string(lisp-obj &optional layout)
+(defun eplotly-string (lisp-obj &optional layout)
   "Generate the HTML string containing thejavascript script.
 
 Arguments:
@@ -154,16 +154,16 @@ Arguments:
 			       plotly-tag
 			       (json-encode
 				lisp-obj)))))
-       (jack-html
-	`(:html
-	  (:head
-	   (:script (@	:src ,plotly-file)))
-	  (:body
-	   (:div (@ :id ,plotly-tag :height "80%")
-		 (:script ,format-inst)))))))
+    (jack-html
+     `(:html
+       (:head
+	(:script (@	:src ,plotly-file)))
+       (:body
+	(:div (@ :id ,plotly-tag :height "80%")
+	      (:script ,format-inst)))))))
 
 
-(defun eplotly(lisp-obj &optional layout)
+(defun eplotly (lisp-obj &optional layout)
   "Open a web browser showing the plots.
 
 - LISP-OBJ: a nested list that that contains data to be plotted.
@@ -187,18 +187,18 @@ Arguments:
 
 
 ;; some utilities to make plotting faster and easier
-(cl-defun eplotly-simple-layout( &key
-				 (title "")
-				 (xlim nil)
-				 (ylim nil)
-				 (xlab nil)
-				 (ylab nil)
-				 ;; (legend nil)
-				 (autosize  "false")
-				 (width 800)
-				 (height 500)
-				 (barmode nil)
-				 (tickangle nil))
+(cl-defun eplotly-simple-layout ( &key
+				  (title "")
+				  (xlim nil)
+				  (ylim nil)
+				  (xlab nil)
+				  (ylab nil)
+				  ;; (legend nil)
+				  (autosize  "false")
+				  (width 800)
+				  (height 500)
+				  (barmode nil)
+				  (tickangle nil))
   "Create a layout for the chart.
 
 Arguments:
@@ -264,13 +264,13 @@ Arguments:
     template))
 
 
-(cl-defun eplotly-dotchart-series(xseries yseries &key
-					  (mode "markers")
-					  (name "")
-					  (text nil)
-					  (size 12)
-					  (color nil)
-					  (symbol nil))
+(cl-defun eplotly-dotchart-series (xseries yseries &key
+					   (mode "markers")
+					   (name "")
+					   (text nil)
+					   (size 12)
+					   (color nil)
+					   (symbol nil))
   "Create data series for dotchart.
 
 Arguments:
@@ -295,7 +295,7 @@ Arguments:
 	       (symbol . ,symbol)))))
 
 
-(cl-defun eplotly-dot(series &rest layout-args)
+(cl-defun eplotly-dot (series &rest layout-args)
   "Make creation of a dotchart a little easier.
 
 - SERIES: a nested list containing data series to be plot.
@@ -320,11 +320,11 @@ Example (remember to un-escape quotation marks before running):
 
 ;; Barcharts
 
-(cl-defun eplotly-barchart-series(xseries yseries
-					  &key
-					  (mode "markers")
-					  (name "")
-					  (text nil))
+(cl-defun eplotly-barchart-series (xseries yseries
+					   &key
+					   (mode "markers")
+					   (name "")
+					   (text nil))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -342,7 +342,7 @@ Arguments:
     (text . ,text)))
 
 
-(cl-defun eplotly-bar(series &rest layout-args)
+(cl-defun eplotly-bar (series &rest layout-args)
   "Make creation of a barchart a little easier.
 
 Arguments:
@@ -357,11 +357,11 @@ Arguments:
 
 ;; Piecharts
 
-(cl-defun eplotly-pie-series(vals labels
-				  &key
-				  (name "")
-				  (text nil)
-				  (hole 0))
+(cl-defun eplotly-pie-series (vals labels
+				   &key
+				   (name "")
+				   (text nil)
+				   (hole 0))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -380,7 +380,7 @@ Arguments:
     (hole . ,hole)))
 
 
-(cl-defun eplotly-pie(series &rest layout-args)
+(cl-defun eplotly-pie (series &rest layout-args)
   "Make creation of a piechart a little easier.
 
 Arguments:
@@ -395,12 +395,12 @@ Arguments:
 
 ;; Heatmap
 
-(cl-defun eplotly-heatmap-series(vals
-				 &key
-				 (x nil)
-				 (y nil)
-				 (text nil)
-				 (name ""))
+(cl-defun eplotly-heatmap-series (vals
+				  &key
+				  (x nil)
+				  (y nil)
+				  (text nil)
+				  (name ""))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -422,7 +422,7 @@ Arguments:
     (text . ,text)))
 
 
-(cl-defun eplotly-heatmap(series &rest layout-args)
+(cl-defun eplotly-heatmap (series &rest layout-args)
   "Make creation of a heatmap chart a little easier.
 
 Arguments:
@@ -438,11 +438,11 @@ Arguments:
 
 ;; Histograms
 
-(cl-defun eplotly-hist-series(vals
-			      &key
-			      (direction "vertical")
-			      (text nil)
-			      (name ""))
+(cl-defun eplotly-hist-series (vals
+			       &key
+			       (direction "vertical")
+			       (text nil)
+			       (name ""))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -468,7 +468,7 @@ Arguments:
     (error "Direction should either be horizontal or vertical"))))
 
 
-(cl-defun eplotly-hist(series &rest layout-args)
+(cl-defun eplotly-hist (series &rest layout-args)
   "Make creation of a histogram a little easier.
 
 Arguments:
@@ -484,11 +484,11 @@ Arguments:
 
 ;; Boxplots
 
-(cl-defun eplotly-box-series(vals
-			     &key
-			     (direction "vertical")
-			     (text nil)
-			     (name nil))
+(cl-defun eplotly-box-series (vals
+			      &key
+			      (direction "vertical")
+			      (text nil)
+			      (name nil))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -514,7 +514,7 @@ Arguments:
     (error "Direction should either be horizontal or vertical"))))
 
 
-(cl-defun eplotly-box(series &rest layout-args)
+(cl-defun eplotly-box (series &rest layout-args)
   "Make creation of a boxchart a little easier.
 
 Arguments:
@@ -530,15 +530,15 @@ Arguments:
 
 ;; Curves
 
-(cl-defun eplotly-fun-series(fun xmin xmax
-				      &key
-				      (step nil)
-				      (mode "lines")
-				      (name "")
-				      (text nil)
-				      (color "red")
-				      (dash "solid")
-				      (width 1))
+(cl-defun eplotly-fun-series (fun xmin xmax
+				  &key
+				  (step nil)
+				  (mode "lines")
+				  (name "")
+				  (text nil)
+				  (color "red")
+				  (dash "solid")
+				  (width 1))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -574,7 +574,7 @@ Arguments:
 	       (width . ,width))))))
 
 
-(cl-defun eplotly-fun(series &rest layout-args)
+(cl-defun eplotly-fun (series &rest layout-args)
   "Make creation of a barchart a little easier.
 
 Arguments:
@@ -590,12 +590,12 @@ Arguments:
 
 ;; Maps
 
-(cl-defun eplotly-densitymap-series(&key lon lat z
-					 (mode "densitymap")
-					 (text nil)
-					 (radius 50)
-					 (yanchor "top")
-					 (len 0.5))
+(cl-defun eplotly-densitymap-series (&key lon lat z
+					  (mode "densitymap")
+					  (text nil)
+					  (radius 50)
+					  (yanchor "top")
+					  (len 0.5))
   "Create an alist for the plotly chart.
 
 Arguments:
@@ -624,7 +624,7 @@ Arguments:
 		(len . ,len))))))
 
 
-(cl-defun eplotly-densitymap(series &rest layout-args)
+(cl-defun eplotly-densitymap (series &rest layout-args)
   "Make creation of a barchart a little easier.
 
 Arguments:
@@ -641,7 +641,7 @@ Arguments:
 	   (apply #'eplotly-simple-layout layout-args)))
 
 
-(cl-defun eplotly-combine(series &rest layout-args)
+(cl-defun eplotly-combine (series &rest layout-args)
   "Combine various charts.
 
 
@@ -658,7 +658,7 @@ Example:
      (eplotly-fun
       (
 	     (parabola -10 10 :color \"red\" :name \"parabola\" :dash \"solid\")
-	     (,(tangent-at #'parabola #'parabola-deriv 3) -10 10
+	     (,(tangent-at #\\='parabola #\\='parabola-deriv 3) -10 10
 	      :color \"green\" :name \"Tangent at 3\" :dash \"dash\")
 	     (parabola 3 3 :mode \"markers\" :name \"Tangent point at 3\" :color \"green\")
 	     (parabola -5 -5 :mode \"markers\" :name \"Tangent point at -5\"
@@ -674,55 +674,55 @@ Example:
       ((layout
 	(apply #'eplotly-simple-layout layout-args))
        (data-series (mapcan
-	    (lambda(el)
-	      (let*
-		  ((fun (car el))
-		   (series-element (car (cdr el))))
-		(cond
-		 ((equal fun 'eplotly-dot)
-		  (mapcar #'(lambda(x)
-			      (apply #'eplotly-dotchart-series x))
-			  series-element))
-		 ((equal fun 'eplotly-fun)
-		  (mapcar #'(lambda(x)
-			      (apply #'eplotly-fun-series x))
-			  series-element))
+		     (lambda(el)
+		       (let*
+			   ((fun (car el))
+			    (series-element (car (cdr el))))
+			 (cond
+			  ((equal fun 'eplotly-dot)
+			   (mapcar #'(lambda(x)
+				       (apply #'eplotly-dotchart-series x))
+				   series-element))
+			  ((equal fun 'eplotly-fun)
+			   (mapcar #'(lambda(x)
+				       (apply #'eplotly-fun-series x))
+				   series-element))
 
-		 (t nil))))
-	    series)))
+			  (t nil))))
+		     series)))
     (dolist (el series)
       (let*
 	  ((fun (car el))
 	   (element-series (car (cdr el))))
-      (when (equal fun 'eplotly-shapes)
+	(when (equal fun 'eplotly-shapes)
 	  (let*
-	    ((res (eplotly-build-shapes
-		   element-series
-		    layout-args)))
-	(setf layout
+	      ((res (eplotly-build-shapes
+		     element-series
+		     layout-args)))
+	    (setf layout
 	          (cons (car res) layout))))))
-        (eplotly data-series
+    (eplotly data-series
 	     layout)))
-  
+
 
 
 ;; Shapes
 
 
-(cl-defun eplotly-shapes-series(&key
-				(type "rect" )
-				(xref "x" )
-				(yref "y" )
-				(x0 nil); "2015-02-04" )
-				(y0 nil)
-				(x1 nil);"2015-02-06" )
-				(y1 nil)
-				(fillcolor "#d3d3d3" )
-				(textposition "top center")
-				(fontsize 10)
-				(opacity 0.2 )
-				(name "")
-				(text nil))
+(cl-defun eplotly-shapes-series (&key
+				 (type "rect" )
+				 (xref "x" )
+				 (yref "y" )
+				 (x0 nil); "2015-02-04" )
+				 (y0 nil)
+				 (x1 nil);"2015-02-06" )
+				 (y1 nil)
+				 (fillcolor "#d3d3d3" )
+				 (textposition "top center")
+				 (fontsize 10)
+				 (opacity 0.2 )
+				 (name "")
+				 (text nil))
   "Create data series for dotchart.
 
 Arguments:
@@ -763,19 +763,19 @@ Arguments:
 	       (font . ((size . ,fontsize)
 			;; (style . "italic")
 			))
-	        ;; or "italic")
+	       ;; or "italic")
 	       ))
      (fillcolor . ,fillcolor )
      (opacity . ,opacity))))
 
 
-(defun eplotly-unnest(li)
+(defun eplotly-unnest (li)
   "Return the car of LI if it is a nested list."
   (if (listp (car li))
       (car li)
     li))
 
-(defun eplotly-build-axis-limits(axis series)
+(defun eplotly-build-axis-limits (axis series)
   "Build limits for AXIS from SERIES of data.
 
 Arguments:
@@ -798,7 +798,7 @@ Arguments:
     (list val-min val-max)))
 
 
-(cl-defun eplotly-build-shapes(series &rest layout-args)
+(cl-defun eplotly-build-shapes (series &rest layout-args)
   "Make creation of a dotchart a little easier.
 
 - SERIES: a nested list containing data series to be plot.
@@ -840,7 +840,7 @@ Example (remember to un-escape quotation marks before running):
     (cons shapes layout)))
 
 
-(cl-defun eplotly-shapes(series &rest layout-args)
+(cl-defun eplotly-shapes (series &rest layout-args)
   "Make creation of a dotchart a little easier.
 
 - SERIES: a nested list containing data series to be plot.
