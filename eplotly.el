@@ -28,7 +28,11 @@
 
 ;;; Commentary:
 ;;
-;; Create Plotly charts
+;; Create Plotly charts directly from Emacs.
+;; This minor mode allows Emacs users to create plots directly from elisp
+;; files, without the need for external programs such as R or gnuplot.
+;; It is a simple (and limited in scope) wrapper around Plotly library.
+
 
 ;;;; Installation
 
@@ -50,13 +54,7 @@
 
 ;;;; Usage
 
-;; Run:
-
-;; M-x eplotly-mode
-
-;;;; Tips
-
-;;; Code:
+;; See https://codeberg.org/GioBo/eplotly
 
 ;;;; Requirements
 
