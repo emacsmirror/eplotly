@@ -94,6 +94,9 @@ locally a copy of plotly.js, i.e. something like the following:
         ))
    #+end_src
 
+   #+RESULTS:
+
+   [[file:Graphs/Chart2.png]]
    For each series we can customize various some parameters (these parameters try to
    follow the same names used in Plotly). If we want to plot a line that passes
    through the dots, we should pass the value "lines" to the key :mode
@@ -105,7 +108,10 @@ locally a copy of plotly.js, i.e. something like the following:
               (10 11 12 13)
              :mode "lines")))
    #+end_src
-   
+
+   #+RESULTS:
+
+   [[file:Graphs/Chart3.png]]
 
    To plot both dots and line, just use :mode "lines+markers":
 
@@ -119,6 +125,9 @@ locally a copy of plotly.js, i.e. something like the following:
                   )))
    #+end_src
 
+   #+RESULTS:
+  [[file:Graphs/Chart4.png]]
+   
   The following are some of the keys that you can use for each data seris:
 
   - :name :: name of the series
@@ -154,6 +163,10 @@ locally a copy of plotly.js, i.e. something like the following:
 
    #+end_src
 
+   #+RESULTS:
+
+   [[file:Graphs/Chart5.png]]
+   
    You can also customize the color and the shape of each dot in a data-series
    via the :color and :symbol keys.
 
@@ -169,6 +182,9 @@ locally a copy of plotly.js, i.e. something like the following:
      :title "Using eplotly-dot elisp function")
   #+end_src
 
+  #+RESULTS:
+
+  [[file:Graphs/Chart6.png]]
   
 ** Barcharts <<Barcharts>>
 
@@ -202,7 +218,10 @@ locally a copy of plotly.js, i.e. something like the following:
               :barmode  "stack"
               :title "Simple Barcharts")
   #+end_src
-  
+
+  #+RESULTS:
+
+  [[file:Graphs/Chart7.png]]
 
   You can also add text to each bar via the :text keyword:
 
@@ -215,6 +234,9 @@ locally a copy of plotly.js, i.e. something like the following:
                 ))
   #+end_src
 
+  #+RESULTS:
+  [[file:Graphs/Chart8.png]]
+  
   The angle of the text at the tick marks can be rotated via the :tickangle parameter:
 
   #+begin_src elisp
@@ -223,8 +245,11 @@ locally a copy of plotly.js, i.e. something like the following:
               :text  (8.0 8.0 12.0 12.0 13.0 20.0)))
            :tickangle -45)
   #+end_src
-  
 
+  #+RESULTS:
+  
+   [[file:Graphs/Chart9.png]]
+   
 ** Piechart <<Piechart>>
 
   To create a simple pie chart, pass a data series whose elements
