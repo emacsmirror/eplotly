@@ -126,7 +126,8 @@ locally a copy of plotly.js, i.e. something like the following:
    #+end_src
 
    #+RESULTS:
-  [[file:Graphs/Chart4.png]]
+
+   [[file:Graphs/Chart4.png]]
    
   The following are some of the keys that you can use for each data seris:
 
