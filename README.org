@@ -201,7 +201,6 @@ locally a copy of plotly.js, i.e. something like the following:
   - :barmode :: if set to "stack", the bars are stacked
   - :title :: title of the chart
 
-
   #+begin_src elisp
     (eplotly-bar '(
                 ;; first series of bars
@@ -236,6 +235,7 @@ locally a copy of plotly.js, i.e. something like the following:
   #+end_src
 
   #+RESULTS:
+
   [[file:Graphs/Chart8.png]]
   
   The angle of the text at the tick marks can be rotated via the :tickangle parameter:
@@ -267,6 +267,9 @@ locally a copy of plotly.js, i.e. something like the following:
          )))
 #+end_src
 
+#+RESULTS:
+
+  [[file:Graphs/Chart10.png]]
 
   To create a doughnut chart, simply include the additiona parameter
   'hole in the alist (its value should be comprised between
@@ -285,6 +288,9 @@ locally a copy of plotly.js, i.e. something like the following:
 
 #+end_src
 
+#+RESULTS:
+
+ [[file:Graphs/Chart11.png]]
 
 ** Heatmap <<Heatmap>>
 
@@ -317,6 +323,10 @@ locally a copy of plotly.js, i.e. something like the following:
 
     #+end_src
 
+    #+RESULTS:
+
+    [[file:Graphs/Chart12.png]]
+    
     If you want to add labels to the x and y axis, just set the
     :x and :y parameters with list containing the labels (pay
     attention to the lenght of each list, which should correspond
@@ -333,6 +343,9 @@ locally a copy of plotly.js, i.e. something like the following:
       :y ("Morning" "Afternoon" "Evening"))))
 #+end_src
 
+#+RESULTS:
+
+ [[file:Graphs/Chart13.png]]
 
 ** Histograms <<Histograms>>
 
@@ -343,6 +356,10 @@ locally a copy of plotly.js, i.e. something like the following:
    '(((1 2 2 2 1 1 1 4 4 4)
       )))
 #+end_src
+
+#+RESULTS:
+
+   [[file:Graphs/Chart14.png]]
 
   By default the bars are plotted vertically; to have horizontal
   bars, set the key :direction to "horizontal";
@@ -355,6 +372,10 @@ locally a copy of plotly.js, i.e. something like the following:
 
 #+end_src
 
+#+RESULTS:
+
+  [[file:Graphs/Chart15.png]]
+
   For a stacked histogram, pass two or more series as a first argument,
   then, then pass the :barmode key set to "stack".
   
@@ -365,6 +386,9 @@ locally a copy of plotly.js, i.e. something like the following:
    :barmode "stack")
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart16.png]]
 
 ** Boxplots <<Boxplots>>
 
@@ -381,6 +405,10 @@ For vertical boxplots, pass lists of data for each box
 
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart17.png]]
+
 You can specify the names of each box, by using the :name key
 
 #+begin_src elisp
@@ -394,6 +422,9 @@ You can specify the names of each box, by using the :name key
 
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart18.png]]
 
 For horizontal boxplots, set the :direction key to "horizontal"
 
@@ -411,7 +442,9 @@ For horizontal boxplots, set the :direction key to "horizontal"
 
 #+end_src
 
+#+RESULTS:
 
+[[file:Graphs/Chart19.png]]
 
 *Grouped boxplots*: for grouped boxplots it is more convenient to
 use the *simplot* function (see [[Create boxplots]] paragraph)
@@ -452,6 +485,10 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
        ((lambda(x)  (+ (* 3 x x) (* 5 x))) -10 10)))
   #+end_src
 
+[[file:Graphs/Chart20.png]]
+  
+  #+RESULTS:
+
   ..let's add a line ($y = 10 * x + 3$) in green color and dotted line:
 
   #+begin_src elisp
@@ -464,7 +501,10 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
        )
   #+end_src
 
+  #+RESULTS:
 
+  [[file:Graphs/Chart21.png]]
+  
   Let's try a more complex example: we want to plot the parabola
   $y = 3 * x^2 + 5 * x$ and its tangent lines at points with x=-5
   and x=3.
@@ -501,6 +541,9 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
         `(lambda(z)(+ (* ,m z) ,b))))
   #+end_src
 
+  #+RESULTS:
+  : tangent-at
+
     We can now plot the parabola and the 2 tangent curves:
 
     #+begin_src elisp
@@ -527,6 +570,10 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
         ))
     #+end_src
 
+    #+RESULTS:
+
+    [[file:Graphs/Chart22.png]]
+    
     Please note the following:
 
     - the nested list passed to eplotly-fun is /backquoted/ so that the
@@ -637,7 +684,9 @@ the form of key/value(s); the following parameters are accepted:
  )
   #+end_src
 
+  #+RESULTS:
 
+[[file:Graphs/Chart23.png]]
 
 
 * More complex graphs via ~eplotly~
@@ -693,6 +742,9 @@ the form of key/value(s); the following parameters are accepted:
         )
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart24.png]]
 
  Create a basic barchart with ~eplotly~:
 
@@ -702,6 +754,10 @@ the form of key/value(s); the following parameters are accepted:
                    (type . "bar")))
            '((title . "Barchart")))
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart25.png]]
 
    Create a grouped barchart with ~eplotly~:
 
@@ -719,6 +775,10 @@ the form of key/value(s); the following parameters are accepted:
            '((barmode . "group"))
            )
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart26.png]]
 
   Create a stacked barchart with ~eplotly~:
 
@@ -744,7 +804,9 @@ the form of key/value(s); the following parameters are accepted:
            )
   #+end_src
 
-  
+  #+RESULTS:
+
+  [[file:Graphs/Chart27.png]]
 
   Create a scatter Plot with a Color Dimension
 
@@ -759,7 +821,10 @@ the form of key/value(s); the following parameters are accepted:
 
   #+end_src
 
+  #+RESULTS:
 
+  [[file:Graphs/Chart28.png]]
+  
   Set up colors, symbol and other parameters for a dotchart:
 
   #+begin_src elisp
@@ -776,7 +841,10 @@ the form of key/value(s); the following parameters are accepted:
 
   #+end_src
 
+  #+RESULTS:
 
+  [[file:Graphs/Chart29.png]]
+  
   Create a piechart:
 
   #+begin_src elisp
@@ -787,6 +855,10 @@ the form of key/value(s); the following parameters are accepted:
          (type . "pie")
          )))
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart30.png]]
 
   Create a doughnut chart:
 
@@ -805,6 +877,9 @@ the form of key/value(s); the following parameters are accepted:
 
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart31.png]]
 
  Create a heatmap:
      
@@ -818,6 +893,10 @@ the form of key/value(s); the following parameters are accepted:
             ))
   #+end_src
 
+  #+RESULTS:
+
+  [[file:Graphs/Chart32.png]]
+  
   Create histograms
 
     
@@ -826,6 +905,10 @@ the form of key/value(s); the following parameters are accepted:
    '(((y . (1 2 2 2 1 1 1 4 4 4))
       (type . "histogram"))))
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart33.png]]
 
   For a stacked histogram, pass two or more series as a first argument,
   then, as a second argume (containing the layout settings) include
@@ -842,6 +925,9 @@ the form of key/value(s); the following parameters are accepted:
    '((barmode . "stack")))
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart34.png]]
 
 ** Create boxplots <<Create boxplots>>
 
@@ -858,6 +944,10 @@ For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box"
 
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart35.png]]
+
 For horizontal boxplots, use 'x instead of 'y in the data-series
 nested list.
 
@@ -870,6 +960,10 @@ nested list.
       (type . "box"))))
 
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart36.png]]
 
 Let's create a plot similar to the one in Plotly-javascript tutorial:
 
@@ -891,6 +985,10 @@ Let's create a plot similar to the one in Plotly-javascript tutorial:
         (type . "box"))))
 
 #+end_src
+
+#+RESULTS:
+
+[[file:Graphs/Chart37.png]]
 
     To include the underlying dots, add:
 
@@ -916,6 +1014,9 @@ Let's create a plot similar to the one in Plotly-javascript tutorial:
 
 #+end_src
 
+#+RESULTS:
+
+[[file:Graphs/Chart38.png]]
 
 *Grouped boxplots*: for each data series, pass both y values (the data
 from which the box should be built) and x values (labels that represent
@@ -951,7 +1052,9 @@ the group to which each y-value belongs to).
 
 #+end_src
 
+#+RESULTS:
 
+[[file:Graphs/Chart39.png]]
 
 
 
@@ -997,6 +1100,8 @@ the group to which each y-value belongs to).
         (pattern .  "independent")))))
 #+end_src
 
+#+RESULTS:
+
 
 * Surface plots
 
@@ -1025,6 +1130,8 @@ the group to which each y-value belongs to).
       (type . "surface"))))
 #+end_src
 
+#+RESULTS:
+
 
 Plot a densitymap
 
@@ -1045,4 +1152,6 @@ Plot a densitymap
  '((coloraxis . ((colorscale . "Viridis")))))
 
 #+end_src
+
+#+RESULTS:
 
