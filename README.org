@@ -76,6 +76,10 @@ locally a copy of plotly.js, i.e. something like the following:
 
    #+end_src
 
+   [[file:Graphs/Chart1.png]]
+   
+   #+RESULTS:
+
    Suppose we want to add a second series of dots, simply add another
    nested list with x and y values to the data-series.
    #+begin_src elisp
