@@ -127,6 +127,61 @@ multidimensional arrays)."
 		(t el)))	obj)))
 
 (defun eplotly-string (lisp-obj &optional layout)
+  (interactive)
+  (let*
+      ((plotly-tag "temp")
+       (plotly-file (if	 eplotly-dir
+			"./plotly.min.js"
+		      eplotly-minified-js))
+       (format-inst (eplotly-string-build lisp-obj plotly-tag)))
+
+    (jack-html
+     `(:html
+       (:head
+	(:script (@	:src ,plotly-file)))
+       (:body
+	(:div (@ :id ,plotly-tag :height "80%")
+	      (:script ,format-inst)))))))
+
+;; (defun eplotly-string (lisp-obj &optional layout)
+;;   "Generate the HTML string containing thejavascript script.
+
+;; Arguments:
+
+;; - LISP-OBJ: Lisp nested alist that contains the data to plot
+
+;; - LAYOUT: list alist containing the layout parameters for the plot."
+;;   (interactive)
+;;   (let*
+;;       ((plotly-tag "temp")
+;;        (plotly-file (if	 eplotly-dir
+;; 			"./plotly.min.js"
+;; 		      eplotly-minified-js))
+;;        ;; (lisp-obj (mapcar #'eplotly-rearrange-data-series lisp-obj))
+;;        (lisp-obj (mapcan #'eplotly-rearrange-data-series lisp-obj))
+;;        (format-inst  (if layout
+;; 			 (format "Plotly.newPlot('%s', %s,%s);"
+;; 				 plotly-tag
+;; 				 (json-encode
+;; 				  lisp-obj)
+;; 				 (json-encode layout))
+;; 		       (format "Plotly.newPlot('%s', %s);"
+;; 			       plotly-tag
+;; 			       (json-encode
+;; 				lisp-obj)))))
+;;     (jack-html
+;;      `(:html
+;;        (:head
+;; 	(:script (@	:src ,plotly-file)))
+;;        (:body
+;; 	(:div (@ :id ,plotly-tag :height "80%")
+;; 	      (:script ,format-inst)))))))
+
+
+
+
+
+(defun eplotly-string-build (lisp-obj plotly-tag &optional layout)
   "Generate the HTML string containing thejavascript script.
 
 Arguments:
@@ -136,10 +191,10 @@ Arguments:
 - LAYOUT: list alist containing the layout parameters for the plot."
   (interactive)
   (let*
-      ((plotly-tag "temp")
-       (plotly-file (if	 eplotly-dir
-			"./plotly.min.js"
-		      eplotly-minified-js))
+      (;; (plotly-tag "temp")
+       ;; (plotly-file (if	 eplotly-dir
+       ;; 			"./plotly.min.js"
+       ;; 		      eplotly-minified-js))
        ;; (lisp-obj (mapcar #'eplotly-rearrange-data-series lisp-obj))
        (lisp-obj (mapcan #'eplotly-rearrange-data-series lisp-obj))
        (format-inst  (if layout
@@ -152,13 +207,13 @@ Arguments:
 			       plotly-tag
 			       (json-encode
 				lisp-obj)))))
-    (jack-html
-     `(:html
-       (:head
-	(:script (@	:src ,plotly-file)))
-       (:body
-	(:div (@ :id ,plotly-tag :height "80%")
-	      (:script ,format-inst)))))))
+    format-inst))
+
+
+
+
+
+
 
 
 (defun eplotly (lisp-obj &optional layout)
