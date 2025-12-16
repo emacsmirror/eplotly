@@ -294,8 +294,7 @@ locally a copy of plotly.js, i.e. something like the following:
 
 ** Heatmap <<Heatmap>>
 
-  To build a heatmap you need to pass an alist with car equal to 'z and cdr equal to a
-  a nested list built according to the following criteria:
+  To build a heatmap you need to pass a nested list built according to the following criteria:
 
   - each nested list contains the data of a row (first nested list represents
     the first row at the bottom of the heatmap, the last nested list represents
