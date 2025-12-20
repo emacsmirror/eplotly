@@ -76,6 +76,8 @@ locally a copy of plotly.js, i.e. something like the following:
 
    #+end_src
 
+   #+RESULTS:
+
    [[file:Graphs/Chart1.png]]
    
    #+RESULTS:
@@ -483,6 +485,8 @@ use the *simplot* function (see [[Create boxplots]] paragraph)
      '(
        ((lambda(x)  (+ (* 3 x x) (* 5 x))) -10 10)))
   #+end_src
+
+  #+RESULTS:
 
 [[file:Graphs/Chart20.png]]
   
