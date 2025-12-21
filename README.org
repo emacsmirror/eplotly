@@ -969,6 +969,8 @@ the group to which each y-value belongs to).
         (pattern .  "independent")))))
 #+end_src
 
+#+RESULTS:
+
 
 * Surface plots
 
