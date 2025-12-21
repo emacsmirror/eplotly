@@ -1,4 +1,5 @@
 #+TITLE: eplotly manual
+#+PROPERTY: header-args :tangle test/eplottest.el
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
