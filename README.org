@@ -607,6 +607,8 @@ the form of key/value(s); the following parameters are accepted:
  )
   #+end_src
 
+  #+RESULTS:
+
 
 
 
@@ -1016,6 +1018,8 @@ Plot a densitymap
 
 #+end_src
 
+#+RESULTS:
+
 
 Plot a cloropeth map (examples in Plotly-Javascript tutorial):
 
@@ -1034,6 +1038,8 @@ Plot a cloropeth map (examples in Plotly-Javascript tutorial):
    (width . 1200)
    (height . 800)))
 #+end_src
+
+#+RESULTS:
 
 
 Second example of a cloropeth map:
@@ -1074,3 +1080,5 @@ Second example of a cloropeth map:
   (coloraxis . ((showscale . false)
                 (colorscale . "Viridis")))))
 #+end_src
+
+#+RESULTS:
