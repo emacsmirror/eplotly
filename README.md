@@ -1,6 +1,7 @@
 
 # Table of Contents
 
+<<<<<<< HEAD
 1.  [Installation](#org4a59fc4)
 2.  [Usage - simple plots](#orgad1e24c)
     1.  [Dotcharts ](#org66aaa1b)
@@ -16,6 +17,23 @@
     1.  [Create boxplots ](#orgb01fe8a)
 4.  [Subplots](#orgbbccc33)
 5.  [Surface plots](#orgfa3414b)
+=======
+1.  [Installation](#org26d6c4d)
+2.  [Usage - simple plots](#orgfd4706e)
+    1.  [Dotcharts ](#org8f6b423)
+    2.  [Barcharts ](#org4450aa6)
+    3.  [Piechart ](#org5178437)
+    4.  [Heatmap ](#org5814ab6)
+    5.  [Histograms ](#orge7b5c13)
+    6.  [Boxplots ](#org7fefd3f)
+    7.  [Curves ](#org9a4e0ec)
+    8.  [Densitymaps](#org2757092)
+    9.  [Combining charts](#orgbb7b8bb)
+3.  [More complex graphs via `eplotly`](#org812695c)
+    1.  [Create boxplots ](#org718da7e)
+4.  [Subplots](#org57b2d09)
+5.  [Surface plots](#org6fdcf69)
+>>>>>>> dev
 
 This minor mode allows Emacs users to create plots directly from elisp
 files, without the need for external programs such as R or gnuplot.
@@ -30,6 +48,7 @@ The following utility functions can also be used in place of `eplotly`
 to create common graphs (they assume some default parameters, thus
 simplify the instructions to build plots):
 
+<<<<<<< HEAD
 -   **[`eplotly-dot`](#org85e4bba):** for dotcharts
 -   **[`eplotly-bar`](#org96a371a):** for barcharts
 -   **[`eplotly-pie`](#org19223d1):** for pie charts
@@ -40,6 +59,18 @@ simplify the instructions to build plots):
 
 
 <a id="org4a59fc4"></a>
+=======
+-   **[`eplotly-dot`](#org37c24d6):** for dotcharts
+-   **[`eplotly-bar`](#org2d9fe84):** for barcharts
+-   **[`eplotly-pie`](#org36de347):** for pie charts
+-   **[`eplotly-hist`](#org48705b3):** for histograms
+-   **[`eplotly-heatmap`](#org7294945):** for heatmaps
+-   **[`eplotly-box`](#orgcf7a360):** for boxplots
+-   **[`eplotly-fun`](#org79f699e):** for plotting curves
+
+
+<a id="org26d6c4d"></a>
+>>>>>>> dev
 
 # Installation
 
@@ -65,14 +96,24 @@ locally a copy of plotly.js, i.e. something like the following:
         (setq eplotly-dir "/path/to/plotlyjs/")
 
 
+<<<<<<< HEAD
 <a id="orgad1e24c"></a>
+=======
+<a id="orgfd4706e"></a>
+>>>>>>> dev
 
 # Usage - simple plots
 
 
+<<<<<<< HEAD
 <a id="org66aaa1b"></a>
 
 ## Dotcharts <a id="org85e4bba"></a>
+=======
+<a id="org8f6b423"></a>
+
+## Dotcharts <a id="org37c24d6"></a>
+>>>>>>> dev
 
 You can plot a dotchart via the `eplotly-dot` function: it accepts one or
 more arguments:
@@ -178,9 +219,15 @@ via the :color and :symbol keys.
 ![img](Graphs/Chart6.png)
 
 
+<<<<<<< HEAD
 <a id="orge80540c"></a>
 
 ## Barcharts <a id="org96a371a"></a>
+=======
+<a id="org4450aa6"></a>
+
+## Barcharts <a id="org2d9fe84"></a>
+>>>>>>> dev
 
 To create a barchart you need to pass lists of data for every series of bars.
 Each series should be composed of:
@@ -233,9 +280,15 @@ The angle of the text at the tick marks can be rotated via the :tickangle parame
 ![img](Graphs/Chart9.png)
 
 
+<<<<<<< HEAD
 <a id="org57a1b52"></a>
 
 ## Piechart <a id="org19223d1"></a>
+=======
+<a id="org5178437"></a>
+
+## Piechart <a id="org36de347"></a>
+>>>>>>> dev
 
 To create a simple pie chart, pass a data series whose elements
 are
@@ -267,9 +320,15 @@ To create a doughnut chart, simply include the additiona parameter
 ![img](Graphs/Chart11.png)
 
 
+<<<<<<< HEAD
 <a id="org574fb02"></a>
 
 ## Heatmap <a id="org82c9fa4"></a>
+=======
+<a id="org5814ab6"></a>
+
+## Heatmap <a id="org7294945"></a>
+>>>>>>> dev
 
 To build a heatmap you need to pass a nested list built according to the following criteria:
 
@@ -345,9 +404,15 @@ length of the :y list should be equal to the number of rows):
 ![img](Graphs/Chart13.png)
 
 
+<<<<<<< HEAD
 <a id="org41dc483"></a>
 
 ## Histograms <a id="org3fbb2f1"></a>
+=======
+<a id="orge7b5c13"></a>
+
+## Histograms <a id="org48705b3"></a>
+>>>>>>> dev
 
 To plot histograms you can use the function `eplotly-hist`
 
@@ -378,9 +443,15 @@ then, then pass the :barmode key set to "stack".
 ![img](Graphs/Chart16.png)
 
 
+<<<<<<< HEAD
 <a id="org13ff5b2"></a>
 
 ## Boxplots <a id="org4c211d0"></a>
+=======
+<a id="org7fefd3f"></a>
+
+## Boxplots <a id="orgcf7a360"></a>
+>>>>>>> dev
 
 For vertical boxplots, pass lists of data for each box
 
@@ -420,12 +491,21 @@ For horizontal boxplots, set the :direction key to "horizontal"
 ![img](Graphs/Chart19.png)
 
 **Grouped boxplots**: for grouped boxplots it is more convenient to
+<<<<<<< HEAD
 use the **simplot** function (see [3.1](#org9622d98) paragraph)
 
 
 <a id="org2cca0ad"></a>
 
 ## Curves <a id="orgc72a360"></a>
+=======
+use the **simplot** function (see [3.1](#org59f766c) paragraph)
+
+
+<a id="org9a4e0ec"></a>
+
+## Curves <a id="org79f699e"></a>
+>>>>>>> dev
 
 You can plot curves using the `eplotly-fun` and passing one or more function
 definitions.
@@ -544,7 +624,11 @@ Please note the following:
         plotted instead of lines.
 
 
+<<<<<<< HEAD
 <a id="orgbd82106"></a>
+=======
+<a id="org2757092"></a>
+>>>>>>> dev
 
 ## Densitymaps
 
@@ -561,14 +645,18 @@ the form of key/value(s); the following parameters are accepted:
 -   YANCHOR: where should the legendbar be shown
 -   LEN: length of the legendbar"
 
-    
     (eplotly-densitymap
      '((:lon [10 20 30] :lat [15 25 30] :z [1 2 3])
-       (:lon [25 35 45 ] :lat [5 10 20] :z [1 2 3]))
-      :coloraxis  '((colorscale . "Viridis")))  
+       (:lon [25 35 45 ] :lat [5 10 20] :z [1 2 3])))
+
+![img](Graphs/simple_density_maps.png)
 
 
+<<<<<<< HEAD
 <a id="org69f54b9"></a>
+=======
+<a id="orgbb7b8bb"></a>
+>>>>>>> dev
 
 ## Combining charts
 
@@ -581,7 +669,11 @@ following arguments:
 Eg, suppose we want to combine the followig charts:
 
 -   some functions (e.g. the parabola and and tangent drawn in a previous
+<<<<<<< HEAD
     paragraph; please load the code chunks in [Curves paragraph](#orgc72a360) to run this
+=======
+    paragraph; please load the code chunks in [Curves paragraph](#org79f699e) to run this
+>>>>>>> dev
     example, since you will need a few functions defined there)
 -   some dots, created via the eplotly-dot functions
 -   some shapes (i.e. a circle and a rectangle).
@@ -639,7 +731,11 @@ We could wrap all these function calls into a list and then pass it to the
 ![img](Graphs/Chart23.png)
 
 
+<<<<<<< HEAD
 <a id="org73d827b"></a>
+=======
+<a id="org812695c"></a>
+>>>>>>> dev
 
 # More complex graphs via `eplotly`
 
@@ -721,8 +817,6 @@ Create a grouped barchart with `eplotly`:
 
 Create a stacked barchart with `eplotly`:
 
-    
-    
     ;; stacked
     (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                        (y . (20 14 23))
@@ -745,7 +839,6 @@ Create a stacked barchart with `eplotly`:
 
 Create a scatter Plot with a Color Dimension
 
-    
     (eplotly
      '(((y . (5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5))
         (mode . "markers")
@@ -832,9 +925,15 @@ an alist with values (barmode . "stack").
 ![img](Graphs/Chart34.png)
 
 
+<<<<<<< HEAD
 <a id="orgb01fe8a"></a>
 
 ## Create boxplots <a id="org9622d98"></a>
+=======
+<a id="org718da7e"></a>
+
+## Create boxplots <a id="org59f766c"></a>
+>>>>>>> dev
 
 For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box":
 
@@ -850,7 +949,6 @@ For vertical boxplots, pass alists with car equal to 'y and 'type equal to "box"
 For horizontal boxplots, use 'x instead of 'y in the data-series
 nested list.
 
-    
     (eplotly
      '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
         (type . "box"))
@@ -936,7 +1034,11 @@ the group to which each y-value belongs to).
 ![img](Graphs/Chart39.png)
 
 
+<<<<<<< HEAD
 <a id="orgbbccc33"></a>
+=======
+<a id="org57b2d09"></a>
+>>>>>>> dev
 
 # Subplots
 
@@ -978,8 +1080,14 @@ following will create a 2\*2 grid of charts
           (columns . 2)
           (pattern .  "independent")))))
 
+![img](Graphs/Chart40.png)
 
+<<<<<<< HEAD
 <a id="orgfa3414b"></a>
+=======
+
+<a id="org6fdcf69"></a>
+>>>>>>> dev
 
 # Surface plots
 
@@ -1006,6 +1114,8 @@ and cdr equal "surface").
                  (8.93 8.97 8.97 9.18 9.2 9.18)))
         (type . "surface"))))
 
+![img](Graphs/surface.png)
+
 Plot a densitymap
 
      (eplotly
@@ -1022,4 +1132,6 @@ Plot a densitymap
                   (yanchor .  "top")
                   (len . 0.45)))))
     '((coloraxis . ((colorscale . "Viridis")))))
+
+![img](Graphs/densitymap_2.png)
 
