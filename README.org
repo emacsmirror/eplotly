@@ -1103,10 +1103,8 @@ the group to which each y-value belongs to).
 
 #+RESULTS:
 
-<<<<<<< HEAD
-=======
 [[file:Graphs/Chart40.png]]
->>>>>>> dev
+
 
 * Surface plots
 
@@ -1137,10 +1135,7 @@ the group to which each y-value belongs to).
 
 #+RESULTS:
 
-<<<<<<< HEAD
-=======
 [[file:Graphs/surface.png]]
->>>>>>> dev
 
 Plot a densitymap
 
@@ -1164,7 +1159,4 @@ Plot a densitymap
 
 #+RESULTS:
 
-<<<<<<< HEAD
-=======
 [[file:Graphs/densitymap_2.png]]
->>>>>>> dev
