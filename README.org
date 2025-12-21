@@ -611,7 +611,6 @@ the form of key/value(s); the following parameters are accepted:
 
   
 #+begin_src elisp
-
  (eplotly-densitymap
   '((:lon [10 20 30] :lat [15 25 30] :z [1 2 3])
     (:lon [25 35 45 ] :lat [5 10 20] :z [1 2 3])))
@@ -619,6 +618,7 @@ the form of key/value(s); the following parameters are accepted:
 
 #+RESULTS:
 
+[[file:Graphs/simple_density_maps.png]]
 
 ** Combining charts
 
@@ -788,8 +788,6 @@ the form of key/value(s); the following parameters are accepted:
   Create a stacked barchart with ~eplotly~:
 
   #+begin_src elisp
-    
-
 ;; stacked
 (eplotly (list '((x . ("giraffes" "orangutans" "monkeys"))
                    (y . (20 14 23))
@@ -816,7 +814,6 @@ the form of key/value(s); the following parameters are accepted:
   Create a scatter Plot with a Color Dimension
 
   #+begin_src elisp
-
     (eplotly
      '(((y . (5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5))
         (mode . "markers")
@@ -957,7 +954,6 @@ For horizontal boxplots, use 'x instead of 'y in the data-series
 nested list.
 
 #+begin_src elisp
-
   (eplotly
    '(((x . (1 2 2 2 1 1 1 4 4 4 10 -5))
       (type . "box"))
@@ -1107,6 +1103,7 @@ the group to which each y-value belongs to).
 
 #+RESULTS:
 
+[[file:Graphs/Chart40.png]]
 
 * Surface plots
 
@@ -1137,6 +1134,7 @@ the group to which each y-value belongs to).
 
 #+RESULTS:
 
+[[file:Graphs/surface.png]]
 
 Plot a densitymap
 
@@ -1160,3 +1158,4 @@ Plot a densitymap
 
 #+RESULTS:
 
+[[file:Graphs/densitymap_2.png]]
