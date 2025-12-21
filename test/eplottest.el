@@ -198,7 +198,7 @@
 (eplotly-densitymap
  '((:lon [10 20 30] :lat [15 25 30] :z [1 2 3])
    (:lon [25 35 45 ] :lat [5 10 20] :z [1 2 3]))
-  :coloraxis  '((colorscale . "Viridis")))
+ )
 
 (eplotly-combine
 
