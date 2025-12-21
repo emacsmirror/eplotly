@@ -28,7 +28,11 @@
 
 ;;; Commentary:
 ;;
-;; Create Plotly charts
+;; Create Plotly charts directly from Emacs.
+;; This minor mode allows Emacs users to create plots directly from elisp
+;; files, without the need for external programs such as R or gnuplot.
+;; It is a simple (and limited in scope) wrapper around Plotly library.
+
 
 ;;;; Installation
 
@@ -50,13 +54,7 @@
 
 ;;;; Usage
 
-;; Run:
-
-;; M-x eplotly-mode
-
-;;;; Tips
-
-;;; Code:
+;; See https://codeberg.org/GioBo/eplotly
 
 ;;;; Requirements
 
@@ -658,7 +656,7 @@ Example:
      (eplotly-fun
       (
 	     (parabola -10 10 :color \"red\" :name \"parabola\" :dash \"solid\")
-	     (,(tangent-at #'parabola #'parabola-deriv 3) -10 10
+	     (,(tangent-at #\\='parabola #\\='parabola-deriv 3) -10 10
 	      :color \"green\" :name \"Tangent at 3\" :dash \"dash\")
 	     (parabola 3 3 :mode \"markers\" :name \"Tangent point at 3\" :color \"green\")
 	     (parabola -5 -5 :mode \"markers\" :name \"Tangent point at -5\"
